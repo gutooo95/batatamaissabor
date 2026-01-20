@@ -1,14 +1,23 @@
 
 import React from 'react';
-import { Instagram, Facebook, Phone, MapPin, Mail } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Instagram, Facebook, Phone, MapPin, Mail, Award } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-red-800 text-white pt-12 sm:pt-16 md:pt-20 pb-8 sm:pb-10">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 md:gap-12 mb-12 sm:mb-16 md:mb-20">
-          <div className="flex flex-col items-center sm:items-start">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center p-1 sm:p-2 mb-4 sm:mb-6 shadow-xl overflow-hidden bg-transparent">
+    <footer className="bg-neutral-950 text-white pt-16 sm:pt-20 md:pt-24 pb-8 sm:pb-10 md:pb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 sm:gap-16 md:gap-20 mb-12 sm:mb-16 md:mb-20">
+          
+          {/* Lado Esquerdo: Logo e Slogan */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="flex flex-col items-center md:items-start"
+          >
+            <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full flex items-center justify-center p-2 mb-6 shadow-2xl overflow-hidden bg-transparent">
               <img 
                 src="/images/logo/SEM%20FUNDO.png" 
                 alt="Batatas Mais Sabor Logo"
@@ -25,59 +34,127 @@ const Footer: React.FC = () => {
                 }}
               />
             </div>
-            <h4 className="font-londrina text-2xl sm:text-3xl mb-3 sm:mb-4 text-center sm:text-left">BATATAS MAIS SABOR</h4>
-            <p className="font-montserrat text-red-100 text-center sm:text-left opacity-80 leading-relaxed text-sm sm:text-base">
-              Dedicados à excelência desde a semente até o pacote final. Sinta o sabor da qualidade.
+            <h4 className="font-londrina text-2xl sm:text-3xl md:text-4xl mb-4 text-center md:text-left">BATATAS MAIS SABOR</h4>
+            <p className="font-montserrat text-gray-400 text-center md:text-left leading-relaxed text-sm sm:text-base max-w-xs">
+              A verdadeira explosão de sabor!
             </p>
-          </div>
+            
+            {/* Selo de Qualidade */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              viewport={{ once: true }}
+              className="mt-6 sm:mt-8 flex items-center gap-3 px-4 py-2 bg-yellow-400/10 border border-yellow-400/30 rounded-full"
+            >
+              <Award className="w-5 h-5 text-yellow-400" />
+              <span className="font-montserrat text-xs sm:text-sm font-semibold text-yellow-400">
+                100% Batata Selecionada
+              </span>
+            </motion.div>
+          </motion.div>
 
-          <div>
-            <h4 className="font-montserrat font-black text-base sm:text-lg mb-4 sm:mb-6 md:mb-8 uppercase tracking-widest border-l-4 border-yellow-400 pl-3 sm:pl-4">Menu</h4>
-            <ul className="space-y-3 sm:space-y-4 font-montserrat font-semibold text-red-100 text-sm sm:text-base">
-                <li><a href="#inicio" className="hover:text-yellow-400 transition-colors">Início</a></li>
-                <li><a href="#produtos" className="hover:text-yellow-400 transition-colors">Nossos Produtos</a></li>
-                <li><a href="#origem" className="hover:text-yellow-400 transition-colors">Nossa Origem</a></li>
-                <li><a href="#receitas" className="hover:text-yellow-400 transition-colors">Receitas</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-montserrat font-black text-base sm:text-lg mb-4 sm:mb-6 md:mb-8 uppercase tracking-widest border-l-4 border-yellow-400 pl-3 sm:pl-4">Contato</h4>
-            <ul className="space-y-4 sm:space-y-5 md:space-y-6 font-montserrat text-red-100 text-sm sm:text-base">
-                <li className="flex items-start sm:items-center gap-3 sm:gap-4">
-                    <Phone className="text-yellow-400 shrink-0 mt-0.5 sm:mt-0" size={18} />
-                    <span className="break-all">(44) 98823-1595</span>
-                </li>
-                <li className="flex items-start sm:items-center gap-3 sm:gap-4">
-                    <Mail className="text-yellow-400 shrink-0 mt-0.5 sm:mt-0" size={18} />
-                    <span className="break-all">contato@batatasmaissabor.com.br</span>
-                </li>
-                <li className="flex items-start sm:items-center gap-3 sm:gap-4">
-                    <MapPin className="text-yellow-400 shrink-0 mt-0.5 sm:mt-0" size={18} />
-                    <span>Engenheiro Beltrão - PR, Brasil</span>
-                </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-montserrat font-black text-base sm:text-lg mb-4 sm:mb-6 md:mb-8 uppercase tracking-widest border-l-4 border-yellow-400 pl-3 sm:pl-4">Siga-nos</h4>
-            <div className="flex gap-3 sm:gap-4">
-                <a href="#" className="w-10 h-10 sm:w-12 sm:h-12 bg-red-700 rounded-full flex items-center justify-center hover:bg-yellow-400 hover:text-red-900 transition-all shadow-lg">
-                    <Instagram size={20} className="sm:w-6 sm:h-6" />
+          {/* Centro: Links Rápidos */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            viewport={{ once: true }}
+            className="flex flex-col items-center md:items-start"
+          >
+            <h4 className="font-montserrat font-black text-base sm:text-lg mb-6 md:mb-8 uppercase tracking-widest border-l-4 border-yellow-400 pl-4">
+              Links Rápidos
+            </h4>
+            <ul className="space-y-4 font-montserrat font-semibold text-gray-300 text-sm sm:text-base text-center md:text-left">
+              <li>
+                <a href="#produtos" className="hover:text-yellow-400 transition-colors duration-300">
+                  Produtos
                 </a>
-                <a href="#" className="w-10 h-10 sm:w-12 sm:h-12 bg-red-700 rounded-full flex items-center justify-center hover:bg-yellow-400 hover:text-red-900 transition-all shadow-lg">
-                    <Facebook size={20} className="sm:w-6 sm:h-6" />
+              </li>
+              <li>
+                <a href="#receitas" className="hover:text-yellow-400 transition-colors duration-300">
+                  Receitas
                 </a>
+              </li>
+              <li>
+                <a href="#frota" className="hover:text-yellow-400 transition-colors duration-300">
+                  Logística
+                </a>
+              </li>
+              <li>
+                <a href="#distribuidor" className="hover:text-yellow-400 transition-colors duration-300">
+                  Seja um Distribuidor
+                </a>
+              </li>
+            </ul>
+          </motion.div>
+
+          {/* Lado Direito: Contatos e Redes Sociais */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            viewport={{ once: true }}
+            className="flex flex-col items-center md:items-start"
+          >
+            <h4 className="font-montserrat font-black text-base sm:text-lg mb-6 md:mb-8 uppercase tracking-widest border-l-4 border-yellow-400 pl-4">
+              Contato
+            </h4>
+            <ul className="space-y-4 sm:space-y-5 font-montserrat text-gray-300 text-sm sm:text-base text-center md:text-left">
+              <li className="flex items-center gap-3 sm:gap-4">
+                <Phone className="text-yellow-400 shrink-0" size={18} />
+                <a 
+                  href="https://wa.me/5544988231595" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-yellow-400 transition-colors duration-300 break-all"
+                >
+                  (44) 98823-1595
+                </a>
+              </li>
+              <li className="flex items-center gap-3 sm:gap-4">
+                <MapPin className="text-yellow-400 shrink-0" size={18} />
+                <span>Engenheiro Beltrão - PR, Brasil</span>
+              </li>
+            </ul>
+            
+            {/* Redes Sociais */}
+            <div className="mt-6 sm:mt-8">
+              <h5 className="font-montserrat font-semibold text-sm text-gray-400 mb-4 text-center md:text-left">
+                Siga-nos
+              </h5>
+              <div className="flex gap-4 justify-center md:justify-start">
+                <a 
+                  href="https://www.instagram.com/batatasmaissabor" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-12 h-12 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full flex items-center justify-center hover:bg-yellow-400/20 hover:border-yellow-400/50 transition-all duration-300 group"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="w-5 h-5 text-gray-300 group-hover:text-yellow-400 transition-colors" />
+                </a>
+                <a 
+                  href="https://www.facebook.com/batatasmaissabor" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-12 h-12 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full flex items-center justify-center hover:bg-yellow-400/20 hover:border-yellow-400/50 transition-all duration-300 group"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="w-5 h-5 text-gray-300 group-hover:text-yellow-400 transition-colors" />
+                </a>
+              </div>
+              <p className="mt-4 font-montserrat text-xs text-gray-500 text-center md:text-left">
+                @batatasmaissabor
+              </p>
             </div>
-            <div className="mt-6 sm:mt-8 md:mt-10">
-                <p className="font-pacifico text-yellow-400 text-lg sm:text-xl">Sempre crocante!</p>
-            </div>
-          </div>
+          </motion.div>
         </div>
 
-        <div className="pt-6 sm:pt-8 md:pt-10 border-t border-red-700 text-center font-montserrat text-xs sm:text-sm text-red-200 px-4">
-            <p>&copy; {new Date().getFullYear()} Batatas Mais Sabor Alimentos. Todos os direitos reservados.</p>
-            <p className="mt-2 text-xs opacity-50 uppercase tracking-tighter">Desenvolvido com carinho e muita batata.</p>
+        {/* Copyright */}
+        <div className="pt-8 sm:pt-10 md:pt-12 border-t border-white/10 text-center">
+          <p className="font-montserrat text-xs sm:text-sm text-gray-500">
+            &copy; {new Date().getFullYear()} Batatas Mais Sabor Alimentos. Todos os direitos reservados.
+          </p>
         </div>
       </div>
     </footer>

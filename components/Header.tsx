@@ -73,9 +73,12 @@ const Header: React.FC = () => {
               {item.name}
             </a>
           ))}
-          <button className="bg-red-600 hover:bg-red-700 text-white font-montserrat font-bold py-2 px-4 xl:px-6 rounded-full transition-transform active:scale-95 shadow-lg text-xs xl:text-sm whitespace-nowrap">
+          <a 
+            href="#distribuidor"
+            className="bg-red-600 hover:bg-red-700 text-white font-montserrat font-bold py-2 px-4 xl:px-6 rounded-full transition-transform active:scale-95 shadow-lg text-xs xl:text-sm whitespace-nowrap"
+          >
             Seja um Distribuidor
-          </button>
+          </a>
         </div>
 
         {/* Mobile Toggle */}
@@ -108,9 +111,13 @@ const Header: React.FC = () => {
                   {item.name}
                 </a>
               ))}
-              <button className="bg-red-600 text-white font-montserrat font-bold py-3 sm:py-4 rounded-xl text-sm sm:text-base mt-2">
+              <a 
+                href="#distribuidor"
+                className="bg-red-600 text-white font-montserrat font-bold py-3 sm:py-4 rounded-xl text-sm sm:text-base mt-2 text-center"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Seja um Distribuidor
-              </button>
+              </a>
             </div>
           </motion.div>
         )}

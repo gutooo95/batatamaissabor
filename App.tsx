@@ -5,9 +5,11 @@ import Hero from './components/Hero';
 import Products from './components/Products';
 import Origin from './components/Origin';
 import Fleet from './components/Fleet';
+import Distributor from './components/Distributor';
 import Recipes from './components/Recipes';
 import Footer from './components/Footer';
 import Preloader from './components/Preloader';
+import WhatsAppButton from './components/WhatsAppButton';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -33,14 +35,16 @@ function App() {
     <div className="bg-neutral-950 min-h-screen overflow-x-hidden">
       {isLoading && <Preloader onComplete={handlePreloaderComplete} />}
       <Header />
-            <main className="relative overflow-x-hidden">
-              <Hero isPreloaderComplete={!isLoading} />
-              <Products />
-              <Origin />
-              <Fleet />
-              <Recipes />
-            </main>
+      <main className="relative overflow-x-hidden">
+        <Hero isPreloaderComplete={!isLoading} />
+        <Products />
+        <Origin />
+        <Fleet />
+        <Recipes />
+        <Distributor />
+      </main>
       <Footer />
+      <WhatsAppButton isPreloaderComplete={!isLoading} />
     </div>
   );
 }
