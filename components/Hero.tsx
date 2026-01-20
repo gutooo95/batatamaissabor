@@ -4,7 +4,7 @@ import { ShoppingCart, ArrowRight } from 'lucide-react';
 
 interface FloatingElement {
   id: number;
-  type: 'potato' | 'package' | 'sparkle';
+  type: 'potato' | 'package' | 'sparkle' | 'salt';
   x: number;
   y: number;
   size: number;
@@ -13,7 +13,8 @@ interface FloatingElement {
   blur: number;
   opacity: number;
   initialDelay: number;
-  layer: 'foreground' | 'midground' | 'background';
+  layer: 'foreground' | 'midground' | 'background' | 'salt-layer' | 'small-potatoes' | 'blur-potatoes';
+  parallaxSpeed?: number; // Velocidade de parallax no scroll
 }
 
 interface HeroProps {
@@ -22,8 +23,17 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollY } = useScroll();
-  const opacity = useTransform(scrollY, [0, 400], [1, 0]);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  
+  // Parallax transforms para scroll (velocidades diferentes por camada)
+  const layer1Y = useTransform(scrollYProgress, [0, 1], [0, -50]); // Camada fundo: move mais rápido
+  const layer2Y = useTransform(scrollYProgress, [0, 1], [0, -30]); // Camada meio: velocidade média
+  const layer3Y = useTransform(scrollYProgress, [0, 1], [0, -20]); // Camada frente: move mais devagar
+  const textY = useTransform(scrollYProgress, [0, 1], [0, -10]); // Texto: move menos
   
   // Detecta se é mobile
   const [isMobile, setIsMobile] = useState(false);
@@ -83,6 +93,29 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
         opacity: 1,
         initialDelay: 0.3,
         layer: 'midground',
+      });
+      
+      // 2-3 batatas chips menores no topo com blur intenso (preencher espaço superior)
+      const topPotatoes = [
+        { x: 20, y: 15, size: 35, rotation: -25, blur: 8 }, // Topo-esquerda com blur intenso
+        { x: 80, y: 12, size: 30, rotation: 40, blur: 10 }, // Topo-direita com blur muito intenso
+        { x: 50, y: 8, size: 28, rotation: -15, blur: 9 }, // Topo-centro com blur intenso
+      ];
+      
+      topPotatoes.forEach((potato, i) => {
+        elements.push({
+          id: 30 + i,
+          type: 'potato',
+          x: potato.x,
+          y: potato.y,
+          size: potato.size,
+          rotation: potato.rotation,
+          imageIndex: i % 2,
+          blur: potato.blur,
+          opacity: 0.4, // Mais transparente para não competir com o texto
+          initialDelay: 0.2 + i * 0.1,
+          layer: 'background',
+        });
       });
       
       // 3-4 batatas "explodindo" de trás do pacote em direções diferentes
@@ -209,10 +242,58 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
     // Não recria elementos, apenas ajusta visibilidade via CSS
   }, [isMobile]);
 
-  // Partículas transformadas em batatas e fagulhas com blur cinematográfico
-  const saltParticles = Array.from({ length: isMobile ? 8 : 15 }, (_, i) => {
+  // Sistema de camadas dinâmicas para mobile (Centralização Atmosférica - Apple Style)
+  const generateMobileLayers = (): {
+    topSaltSpices: Array<{ id: number; x: number; y: number; size: number; opacity: number; delay: number }>;
+    edgeBlurPotatoes: Array<{ id: number; x: number; y: number; size: number; rotation: number; imageIndex: number; blur: number; opacity: number; delay: number; zIndex: number }>;
+  } => {
+    // Topo da Tela: Partículas de sal e temperos em slow motion (opacidade reduzida)
+    const topSaltSpices = Array.from({ length: 15 }, (_, i) => ({
+      id: 1000 + i,
+      x: Math.random() * 100,
+      y: Math.random() * 25, // Concentrado no topo (0-25%)
+      size: 2 + Math.random() * 4,
+      opacity: 0.1 + Math.random() * 0.15, // Opacidade reduzida
+      delay: Math.random() * 3, // Slow motion delay
+    }));
+
+    // Bordas Superiores: Duas batatas onduladas em escala 1.5x com blur(12px) - "coladas na lente"
+    const edgeBlurPotatoes = [
+      {
+        id: 2001,
+        x: 5, // Borda esquerda superior
+        y: 3,
+        size: (60 + Math.random() * 30) * 1.5, // Escala 1.5x
+        rotation: -25,
+        imageIndex: 0,
+        blur: 12, // Blur fixo de 12px
+        opacity: 0.25,
+        delay: 0.4,
+        zIndex: 18, // Atrás do texto (z-[21])
+      },
+      {
+        id: 2002,
+        x: 92, // Borda direita superior
+        y: 5,
+        size: (55 + Math.random() * 25) * 1.5, // Escala 1.5x
+        rotation: 30,
+        imageIndex: 1,
+        blur: 12, // Blur fixo de 12px
+        opacity: 0.3,
+        delay: 0.6,
+        zIndex: 18, // Atrás do texto
+      },
+    ];
+
+    return { topSaltSpices, edgeBlurPotatoes };
+  };
+
+  const mobileLayers = isMobile ? generateMobileLayers() : { topSaltSpices: [], edgeBlurPotatoes: [] };
+
+  // Partículas transformadas em batatas e fagulhas com blur cinematográfico (desktop)
+  const saltParticles = Array.from({ length: isMobile ? 0 : 15 }, (_, i) => {
     const isPotato = Math.random() > 0.5;
-    const isEdge = Math.random() > 0.7; // 30% nas bordas (mais blur)
+    const isEdge = Math.random() > 0.7;
     return {
       id: i,
       x: isEdge ? (Math.random() > 0.5 ? Math.random() * 10 : 90 + Math.random() * 10) : Math.random() * 100,
@@ -220,7 +301,7 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
       size: isPotato ? (15 + Math.random() * 25) : (3 + Math.random() * 5),
       delay: Math.random() * 2,
       isPotato: isPotato,
-      blur: isEdge ? (8 + Math.random() * 12) : (2 + Math.random() * 4), // Muito blur nas bordas
+      blur: isEdge ? (8 + Math.random() * 12) : (2 + Math.random() * 4),
     };
   });
 
@@ -355,6 +436,16 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
     >
       {/* Fundo: Vermelho profundo com vinheta cinematográfica */}
       <div className="absolute inset-0 bg-[#8B0000]">
+        {/* Iluminação de Estúdio: Gradiente radial do topo (simula refletor) */}
+        {isMobile && (
+          <motion.div 
+            className="absolute inset-0 pointer-events-none z-[2]"
+            style={{
+              background: 'radial-gradient(ellipse 120% 80% at 50% 0%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 215, 0, 0.08) 20%, rgba(255, 200, 0, 0.04) 40%, transparent 70%)',
+            }}
+          />
+        )}
+        
         {/* Vignette: Ilumina o centro e escurece as quinas */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.1)_0%,_rgba(0,0,0,0.8)_100%)]" />
         
@@ -372,9 +463,90 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/50" />
       </div>
 
-      {/* Layer 1: Batatas e fagulhas com blur cinematográfico */}
-      <div className="absolute inset-0 z-[1] pointer-events-none">
-        {saltParticles.map((particle) => (
+      {/* MOBILE: Topo da Tela - Partículas de Sal e Temperos em Slow Motion */}
+      {isMobile && (
+        <motion.div 
+          className="absolute inset-0 z-[1] pointer-events-none"
+          style={{ y: layer1Y }}
+        >
+          {mobileLayers.topSaltSpices.map((particle) => (
+            <motion.div
+              key={particle.id}
+              className="absolute rounded-full bg-white/30"
+              style={{
+                left: `${particle.x}%`,
+                top: `${particle.y}%`,
+                width: `${particle.size}px`,
+                height: `${particle.size}px`,
+                opacity: particle.opacity,
+                filter: 'blur(0.5px)',
+              }}
+              animate={{
+                y: [-1, 1, -1], // Movimento muito lento (slow motion)
+                opacity: [particle.opacity * 0.3, particle.opacity, particle.opacity * 0.3],
+              }}
+              transition={{
+                duration: 6 + Math.random() * 4, // Slow motion: 6-10 segundos
+                repeat: Infinity,
+                delay: particle.delay,
+                ease: "easeInOut",
+              }}
+            />
+          ))}
+        </motion.div>
+      )}
+
+      {/* MOBILE: Bordas Superiores - Batatas Onduladas 1.5x com blur(12px) "coladas na lente" */}
+      {isMobile && (
+        <motion.div 
+          className="absolute inset-0 pointer-events-none"
+          style={{ y: layer3Y }}
+        >
+          {mobileLayers.edgeBlurPotatoes.map((potato) => (
+            <motion.div
+              key={potato.id}
+              className="absolute"
+              style={{
+                left: `${potato.x}%`,
+                top: `${potato.y}%`,
+                width: `${potato.size}px`,
+                height: `${potato.size}px`,
+                filter: `blur(${potato.blur}px)`, // Blur fixo de 12px
+                opacity: potato.opacity,
+                zIndex: potato.zIndex,
+              }}
+              initial={{ scale: 0, rotate: potato.rotation }}
+              animate={{
+                scale: 1,
+                rotate: potato.rotation + [0, 10, -10, 0],
+                y: [-3, 3, -3], // Movimento sutil
+              }}
+              transition={{
+                scale: { duration: 1, delay: potato.delay, ease: [0.16, 1, 0.3, 1] },
+                rotate: { duration: 8 + Math.random() * 2, repeat: Infinity, ease: "easeInOut" },
+                y: { duration: 6 + Math.random() * 2, repeat: Infinity, delay: potato.delay },
+              }}
+            >
+              <img
+                src={`/images/potatoes/${potatoImages[potato.imageIndex]}`}
+                alt="Batata"
+                className="w-full h-full object-contain"
+                style={{
+                  mixBlendMode: 'normal',
+                }}
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
+
+      {/* Layer 1: Batatas e fagulhas com blur cinematográfico (Desktop apenas) */}
+      {!isMobile && (
+        <div className="absolute inset-0 z-[1] pointer-events-none">
+          {saltParticles.map((particle) => (
           <motion.div
             key={particle.id}
             className="absolute"
@@ -416,7 +588,8 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
             )}
           </motion.div>
         ))}
-      </div>
+        </div>
+      )}
 
       {/* Layer 2: Background Elements (batatas pequenas e fagulhas) */}
       <div className="absolute inset-0 z-[5] pointer-events-none">
@@ -425,15 +598,18 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
           .map((element, index) => renderFloatingElement(element, index))}
       </div>
 
-      {/* Layer 3: Midground - Pacote Churrasco (ATRÁS de tudo no mobile) */}
-      <div className="absolute inset-0 z-[3] md:z-[15] pointer-events-none">
+      {/* Layer 3: Midground - Pacote Churrasco (ATRÁS do título centralizado no mobile, com parallax) */}
+      <motion.div 
+        className="absolute inset-0 z-[3] md:z-[15] pointer-events-none"
+        style={{ y: isMobile ? layer2Y : undefined }} // Parallax no mobile
+      >
         {floatingElements
           .filter(el => el.layer === 'midground')
           .map((element, index) => {
-            // No mobile: posição para baixo e para o lado, escala reduzida, z-index muito baixo
-            const mobileY = isMobile ? 65 : element.y; // Mais abaixo no mobile
-            const mobileX = isMobile ? 75 : element.x; // Para o lado direito no mobile
-            const mobileScale = isMobile ? 0.6 : 1; // Reduzido para 60% no mobile
+            // No mobile: centralizado atrás do título, escala reduzida, z-index baixo
+            const mobileY = isMobile ? 50 : element.y; // Centralizado verticalmente
+            const mobileX = isMobile ? 50 : element.x; // Centralizado horizontalmente
+            const mobileScale = isMobile ? 0.5 : 1; // Reduzido para 50% no mobile
             return (
               <motion.div
                 key={element.id}
@@ -444,13 +620,14 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
                   width: `${isMobile ? element.size * mobileScale : element.size}px`,
                   height: `${isMobile ? element.size * mobileScale : element.size}px`,
                   filter: element.blur > 0 ? `blur(${element.blur}px)` : 'none',
-                  opacity: isMobile ? element.opacity * 0.7 : element.opacity, // Mais transparente no mobile
-                  zIndex: isMobile ? 3 : 15, // Z-index muito baixo no mobile (atrás de tudo)
+                  opacity: isMobile ? element.opacity * 0.5 : element.opacity, // Mais transparente no mobile
+                  zIndex: isMobile ? 18 : 15, // Atrás do texto (z-[21]) mas visível
                   backgroundColor: 'transparent',
                   background: 'transparent',
+                  transform: 'translate(-50%, -50%)', // Centraliza perfeitamente
                 }}
                 initial={{ scale: 0, opacity: 0 }}
-                animate={isPreloaderComplete ? { scale: 1, opacity: isMobile ? element.opacity * 0.7 : element.opacity } : { scale: 0, opacity: 0 }}
+                animate={isPreloaderComplete ? { scale: 1, opacity: isMobile ? element.opacity * 0.5 : element.opacity } : { scale: 0, opacity: 0 }}
                 transition={{ duration: 0.8, delay: isPreloaderComplete ? element.initialDelay : 0, ease: [0.16, 1, 0.3, 1] }}
               >
                 <motion.div
@@ -461,12 +638,12 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
                     background: 'transparent',
                   }}
                   animate={{
-                    y: [-8, 8, -8],
-                    rotate: [element.rotation, element.rotation + 5, element.rotation],
+                    y: [-5, 5, -5], // Movimento mais sutil no mobile
+                    rotate: [element.rotation, element.rotation + 3, element.rotation],
                   }}
                   transition={{
-                    y: { duration: 3 + Math.random() * 2, repeat: Infinity, ease: "easeInOut" },
-                    rotate: { duration: 4 + Math.random() * 2, repeat: Infinity, ease: "easeInOut" },
+                    y: { duration: 4 + Math.random() * 2, repeat: Infinity, ease: "easeInOut" },
+                    rotate: { duration: 6 + Math.random() * 2, repeat: Infinity, ease: "easeInOut" },
                   }}
                   className="w-full h-full"
                 >
@@ -491,50 +668,65 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
               </motion.div>
             );
           })}
-      </div>
+      </motion.div>
 
-      {/* Layer 4: Título e Conteúdo Principal (ACIMA do pacote) - Mobile-First */}
-      <div className="absolute inset-0 flex items-center justify-center z-[20] text-center text-white pt-24 sm:pt-0">
+      {/* Layer 4: Título e Conteúdo Principal - Centralização Atmosférica (Apple Style) */}
+      <motion.div 
+        className={`absolute inset-0 flex flex-col justify-center items-center z-[20] text-center text-white`}
+        style={{ y: textY }} // Parallax suave no scroll
+      >
+        {/* Gradiente Radial de Iluminação - Spotlight do centro do texto para fora */}
+        {isMobile && (
+          <div 
+            className="absolute inset-0 pointer-events-none z-[19]"
+            style={{
+              background: 'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 215, 0, 0.06) 30%, rgba(255, 200, 0, 0.03) 50%, transparent 80%)',
+            }}
+          />
+        )}
+        
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
-          style={{ opacity }}
-          className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"
+          style={{ 
+            opacity,
+          }}
+          className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-[21]"
         >
-          {/* Slogan acima do título - Cor dourada nítida, mais espaço no mobile */}
+          {/* Slogan acima do título - Pacifico, centralizado com respiro elegante */}
           <motion.span 
             initial={{ y: 20, opacity: 0 }}
             animate={isPreloaderComplete ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
             transition={{ delay: isPreloaderComplete ? 0.3 : 0, duration: 0.8 }}
-            className="font-pacifico text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl mb-6 sm:mb-5 md:mb-6 block relative z-[21]"
+            className="font-pacifico text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl mb-4 sm:mb-5 md:mb-6 block"
             style={{
               color: '#FFD700',
-              textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+              textShadow: '0 2px 4px rgba(0,0,0,0.4)',
               filter: 'drop-shadow(0 2px 4px rgba(255, 215, 0, 0.3))',
             }}
           >
             A verdadeira explosão de sabor!
           </motion.span>
           
-          {/* Título Principal - GIGANTE no mobile, 100% visibilidade, mais espaço */}
+          {/* Título Principal - Londrina Solid Black, text-shadow ultra-sutil para legibilidade absoluta */}
           <motion.h1 
             initial={{ y: 30, opacity: 0 }}
             animate={isPreloaderComplete ? { y: 0, opacity: 1 } : { y: 30, opacity: 0 }}
             transition={{ delay: isPreloaderComplete ? 0.5 : 0, duration: 1 }}
-            className="font-londrina font-black mb-8 sm:mb-8 md:mb-10 lg:mb-12 leading-tight tracking-tighter relative z-[21] text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl"
+            className={`font-londrina font-black mb-8 sm:mb-8 md:mb-10 lg:mb-12 leading-tight tracking-tighter ${isMobile ? 'text-6xl' : 'text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl'}`}
             style={{
               color: '#FFFFFF',
-              textShadow: '0 2px 8px rgba(0,0,0,0.4)',
-              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
+              textShadow: '0 1px 3px rgba(0,0,0,0.5)', // Ultra-sutil para legibilidade sem sujar
+              fontWeight: 900,
+              letterSpacing: isMobile ? '-0.02em' : '-0.01em',
             }}
           >
             BATATAS <br /> 
             <span 
               style={{
                 color: '#FFD700',
-                textShadow: '0 2px 8px rgba(0,0,0,0.4)',
-                filter: 'drop-shadow(0 2px 4px rgba(255, 215, 0, 0.3))',
+                textShadow: '0 1px 3px rgba(0,0,0,0.5)', // Ultra-sutil
               }}
             >
               MAIS SABOR
@@ -546,7 +738,7 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
             initial={{ y: 40, opacity: 0 }}
             animate={isPreloaderComplete ? { y: 0, opacity: 1 } : { y: 40, opacity: 0 }}
             transition={{ delay: isPreloaderComplete ? 0.9 : 0, duration: 0.8 }}
-            className="flex flex-col sm:flex-row gap-5 sm:gap-6 md:gap-8 justify-center items-center relative z-[25] w-full sm:w-auto px-2 sm:px-0 mt-4 sm:mt-0"
+            className={`flex flex-col sm:flex-row gap-5 sm:gap-6 md:gap-8 justify-center items-center relative z-[25] w-full sm:w-auto px-2 sm:px-0 ${isMobile ? 'mt-6 mb-8' : 'mt-4 sm:mt-0'}`}
           >
             {/* Botão Principal - Glass-Premium com brilho no hover */}
             <motion.a
@@ -611,7 +803,7 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
             </motion.a>
           </motion.div>
         </motion.div>
-      </div>
+      </motion.div>
 
       {/* Layer 5: Foreground - Batatas Grandes Desfocadas (oculto no mobile) */}
       <div className="absolute inset-0 z-[30] pointer-events-none hidden md:block">
