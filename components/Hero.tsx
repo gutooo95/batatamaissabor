@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
-import { ShoppingCart, ArrowRight, Truck } from 'lucide-react';
+import { ShoppingCart, ArrowRight } from 'lucide-react';
 
 interface FloatingElement {
   id: number;
@@ -453,13 +453,14 @@ const Hero: React.FC = () => {
           })}
       </div>
 
-      {/* Layer 4: Título e Conteúdo Principal (ACIMA do pacote) */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 z-[20] text-center text-white relative">
+      {/* Layer 4: Título e Conteúdo Principal (ACIMA do pacote) - Centralizado Perfeitamente */}
+      <div className="absolute inset-0 flex items-center justify-center z-[20] text-center text-white">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
           style={{ opacity }}
+          className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"
         >
           {/* Slogan acima do título */}
           <motion.span 
@@ -479,7 +480,7 @@ const Hero: React.FC = () => {
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.5, duration: 1 }}
-            className="font-londrina font-black mb-6 sm:mb-8 leading-none tracking-tighter relative z-[21]"
+            className="font-londrina font-black mb-8 sm:mb-10 md:mb-12 leading-none tracking-tighter relative z-[21]"
             style={{
               fontSize: 'clamp(2rem, 8vw, 5rem)',
               background: 'linear-gradient(to bottom, #FFFFFF, #F5F5DC)',
@@ -500,26 +501,13 @@ const Hero: React.FC = () => {
               MAIS SABOR
             </span>
           </motion.h1>
-          
-          {/* Subtítulo Premium - Largura Estreitada */}
-          <motion.p 
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.7, duration: 0.8 }}
-            className="font-montserrat text-base sm:text-lg md:text-xl lg:text-2xl max-w-xl mx-auto mb-10 sm:mb-12 text-yellow-50/90 font-light tracking-wider px-4"
-            style={{
-              letterSpacing: '0.15em',
-            }}
-          >
-            Crocantes, selecionadas e feitas com o carinho que sua família merece. Sinta a diferença em cada mordida.
-          </motion.p>
 
-          {/* Botões com Glassmorphism */}
+          {/* Botões CTA - Alinhados lado a lado, centralizados, com gap idêntico */}
           <motion.div 
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.9, duration: 0.8 }}
-            className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center px-4 relative z-[25]"
+            className="flex flex-row gap-6 sm:gap-8 justify-center items-center relative z-[25]"
           >
             {/* Botão Principal */}
             <motion.a
@@ -590,38 +578,6 @@ const Hero: React.FC = () => {
           .map((element, index) => renderFloatingElement(element, index))}
       </div>
 
-      {/* Elemento de Confiança BMS Logística */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.2, duration: 0.8 }}
-        className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-[25] pointer-events-none"
-      >
-        <div 
-          className="flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 rounded-full"
-          style={{
-            background: 'rgba(0, 0, 0, 0.4)',
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-          }}
-        >
-          <Truck className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFD700]" />
-          <span className="font-montserrat text-xs sm:text-sm text-white/90 font-medium">
-            Entregue com agilidade pela frota BMS
-          </span>
-        </div>
-      </motion.div>
-
-      {/* Scroll Indicator */}
-      <motion.div 
-        animate={{ y: [0, 10, 0] }}
-        transition={{ repeat: Infinity, duration: 2 }}
-        className="absolute bottom-20 sm:bottom-24 left-1/2 -translate-x-1/2 text-yellow-400/40 flex flex-col items-center gap-2 z-[25] hidden sm:flex"
-      >
-        <span className="font-montserrat text-xs uppercase font-black tracking-widest">Scroll</span>
-        <div className="w-1 h-8 bg-gradient-to-b from-yellow-400 to-transparent rounded-full" />
-      </motion.div>
     </section>
   );
 };

@@ -41,7 +41,7 @@ const Origin: React.FC = () => {
             <h2 className="font-londrina text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-6 sm:mb-8 leading-none">NOSSA ORIGEM, <br />NOSSO ORGULHO.</h2>
             <div className="space-y-4 sm:space-y-5 md:space-y-6 font-montserrat text-sm sm:text-base md:text-lg text-gray-200">
                 <p>
-                    A <strong>Batatas Mais Sabor (BMS)</strong> nasceu com um propósito simples: levar a qualidade do campo direto para a mesa das famílias brasileiras.
+                    A <strong>Batatas Mais Sabor</strong> nasceu com um propósito simples: levar a qualidade do campo direto para a mesa das famílias brasileiras.
                 </p>
                 <p>
                     Nossas batatas são selecionadas rigorosamente em lavouras próprias e parceiras que seguem os mais altos padrões de cultivo sustentável. 

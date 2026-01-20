@@ -14,12 +14,13 @@ const Header: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navItems = [
-    { name: 'Início', href: '#inicio' },
-    { name: 'Produtos', href: '#produtos' },
-    { name: 'Nossa Origem', href: '#origem' },
-    { name: 'Receitas', href: '#receitas' },
-  ];
+    const navItems = [
+      { name: 'Início', href: '#inicio' },
+      { name: 'Produtos', href: '#produtos' },
+      { name: 'Nossa Origem', href: '#origem' },
+      { name: 'Nossa Frota', href: '#frota' },
+      { name: 'Receitas', href: '#receitas' },
+    ];
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
@@ -45,7 +46,7 @@ const Header: React.FC = () => {
                     target.parentElement.style.backgroundColor = '#dc2626';
                     const span = document.createElement('span');
                     span.className = 'text-white font-londrina text-2xl sm:text-3xl leading-none text-center';
-                    span.textContent = 'BMS';
+                    span.textContent = 'Batatas';
                     target.parentElement.appendChild(span);
                   }
                 }

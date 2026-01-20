@@ -30,6 +30,16 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
 
   if (!product || !product.details) return null;
 
+  // Determinar cor do glow baseado no sabor/categoria
+  const getGlowColor = () => {
+    if (product.category === 'Onduladas') {
+      if (product.flavor.toLowerCase().includes('cebola')) return 'rgba(34, 197, 94, 0.3)'; // Verde
+      if (product.flavor.toLowerCase().includes('churrasco')) return 'rgba(220, 38, 38, 0.3)'; // Vermelho
+      return 'rgba(59, 130, 246, 0.3)'; // Azul (Original)
+    }
+    return 'rgba(132, 204, 22, 0.3)'; // Verde-amarelo (Palha)
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -47,57 +57,64 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
           {/* Modal */}
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 pointer-events-none">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="pointer-events-auto w-full max-w-4xl max-h-[90vh] overflow-hidden"
+              initial={{ opacity: 0, scale: 0.92 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.92 }}
+              transition={{ 
+                duration: 0.4, 
+                ease: [0.22, 1, 0.36, 1] 
+              }}
+              className="pointer-events-auto w-full max-w-5xl max-h-[95vh] overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="bg-neutral-900/95 backdrop-blur-2xl rounded-[2.5rem] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col">
-                {/* Header */}
-                <div className="relative px-6 py-6 sm:px-8 sm:py-8 lg:px-10 lg:py-10 border-b border-white/10">
-                  {/* Botão fechar - Maior no mobile */}
+              <div className="bg-neutral-900/80 backdrop-blur-2xl rounded-[2.5rem] border border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col h-full max-h-[95vh]">
+                
+                {/* Header com respiro generoso */}
+                <div className="relative px-10 py-10 sm:px-12 sm:py-12 border-b border-white/10">
+                  {/* Botão fechar */}
                   <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 sm:top-6 sm:right-6 w-12 h-12 sm:w-10 sm:h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 border border-white/20 z-10"
+                    className="absolute top-8 right-8 sm:top-10 sm:right-10 w-11 h-11 sm:w-10 sm:h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 border border-white/20 z-10"
                     aria-label="Fechar"
                   >
-                    <X className="w-6 h-6 sm:w-5 sm:h-5 text-white" />
+                    <X className="w-5 h-5 text-white" />
                   </button>
 
                   {/* Título */}
                   <div className="pr-16 sm:pr-20">
-                    <h2 className="font-londrina text-3xl md:text-4xl font-black text-white mb-3 uppercase tracking-tight">
+                    <h2 className="font-londrina text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-4 uppercase tracking-tighter">
                       {product.name}
                     </h2>
-                    <p className="font-pacifico text-xl md:text-2xl mb-2" style={{ color: '#FFD700' }}>
+                    <p className="font-pacifico text-2xl sm:text-3xl mb-3" style={{ color: '#FFD700' }}>
                       {product.flavor}
                     </p>
-                    <p className="font-montserrat text-sm sm:text-base text-gray-400">
+                    <p className="font-montserrat text-base sm:text-lg text-gray-400 font-medium">
                       {product.weight}
                     </p>
                   </div>
                 </div>
 
-                {/* Conteúdo scrollável */}
-                <div className="overflow-y-auto flex-1 px-6 py-6 sm:px-8 sm:py-8 lg:px-10 lg:py-10">
-                  {/* Imagem do produto com Spotlight */}
-                  <div className="flex justify-center mb-8 sm:mb-10">
-                    <div className="relative w-64 h-80 sm:w-72 sm:h-96 flex items-center justify-center">
-                      {/* Gradiente radial de spotlight mais intenso */}
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.5)_0%,_rgba(255,255,255,0.2)_40%,_transparent_70%)] rounded-3xl" />
+                {/* Conteúdo scrollável com padding generoso */}
+                <div className="overflow-y-auto flex-1 px-10 py-10 sm:px-12 sm:py-12">
+                  
+                  {/* Imagem do produto - Herói com destaque absoluto */}
+                  <div className="flex justify-center mb-12 sm:mb-16">
+                    <div className="relative w-56 h-72 sm:w-72 sm:h-96 lg:w-80 lg:h-[28rem] flex items-center justify-center">
+                      {/* Glow radial baseado no sabor */}
+                      <div 
+                        className="absolute inset-0 rounded-3xl blur-3xl opacity-60"
+                        style={{
+                          background: `radial-gradient(circle at center, ${getGlowColor()}, transparent 70%)`,
+                        }}
+                      />
                       
-                      {/* Fundo sólido para eliminar transparência */}
-                      <div className="absolute inset-0 bg-neutral-900/20 rounded-3xl" />
-                      
-                      {/* Imagem do produto - Máximo brilho, sem transparência, em destaque */}
+                      {/* Imagem do produto - 100% opacidade, filtros leves */}
                       <img
                         src={product.imageUrl}
                         alt={`${product.name} - ${product.flavor}`}
                         className="relative w-full h-full object-contain z-10"
                         style={{
-                          filter: 'brightness(1.7) contrast(1.4) saturate(1.7) drop-shadow(0 0 70px rgba(255,255,255,0.6))',
+                          filter: 'brightness(1.1) contrast(1.05) saturate(1.1)',
                           opacity: 1,
                           mixBlendMode: 'normal',
                         }}
@@ -108,91 +125,112 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                     </div>
                   </div>
 
-                  {/* Informações de Embalagem e EAN */}
-                  <div className="grid md:grid-cols-2 gap-5 sm:gap-6 lg:gap-8 mb-8 sm:mb-10">
-                    <div className="bg-white/5 rounded-2xl p-5 sm:p-6 lg:p-7 border border-white/10">
-                      <div className="flex items-center gap-3 mb-4">
-                        <Package className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
-                        <h3 className="font-montserrat font-bold text-white text-sm sm:text-base uppercase tracking-wide">
+                  {/* Bento Grid - Informações técnicas */}
+                  <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mb-12">
+                    
+                    {/* Card: Unidades/Embalagem */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 }}
+                      className="bg-white/5 rounded-3xl p-8 sm:p-10 border border-white/10 backdrop-blur-sm"
+                    >
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="w-12 h-12 rounded-2xl bg-yellow-400/20 flex items-center justify-center border border-yellow-400/30">
+                          <Package className="w-6 h-6 text-yellow-400" />
+                        </div>
+                        <h3 className="font-londrina text-2xl sm:text-3xl font-black text-white uppercase tracking-tighter">
                           Embalagem
                         </h3>
                       </div>
-                      <p className="font-montserrat text-gray-300 text-sm sm:text-base leading-relaxed">
+                      <p className="font-montserrat text-gray-200 text-lg sm:text-xl leading-relaxed font-medium">
                         {product.details.packaging}
                       </p>
-                    </div>
+                    </motion.div>
 
-                    <div className="bg-white/5 rounded-2xl p-5 sm:p-6 lg:p-7 border border-white/10">
-                      <div className="flex items-center gap-3 mb-4">
-                        <Barcode className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
-                        <h3 className="font-montserrat font-bold text-white text-sm sm:text-base uppercase tracking-wide">
+                    {/* Card: Código EAN */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.15 }}
+                      className="bg-white/5 rounded-3xl p-8 sm:p-10 border border-white/10 backdrop-blur-sm"
+                    >
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="w-12 h-12 rounded-2xl bg-yellow-400/20 flex items-center justify-center border border-yellow-400/30">
+                          <Barcode className="w-6 h-6 text-yellow-400" />
+                        </div>
+                        <h3 className="font-londrina text-2xl sm:text-3xl font-black text-white uppercase tracking-tighter">
                           Código EAN
                         </h3>
                       </div>
-                      <p className="font-montserrat text-gray-300 text-sm sm:text-base font-mono leading-relaxed">
+                      <p className="font-montserrat text-gray-200 text-xl sm:text-2xl font-mono leading-relaxed font-semibold">
                         {product.details.ean}
                       </p>
-                    </div>
+                    </motion.div>
                   </div>
 
-                  {/* Ingredientes */}
-                  <div className="mb-8 sm:mb-10">
-                    <div className="flex items-center gap-3 mb-5">
-                      <Info className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
-                      <h3 className="font-londrina text-xl sm:text-2xl lg:text-3xl font-black text-white uppercase tracking-tight">
+                  {/* Card: Ingredientes */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="mb-12"
+                  >
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-12 h-12 rounded-2xl bg-yellow-400/20 flex items-center justify-center border border-yellow-400/30">
+                        <Info className="w-6 h-6 text-yellow-400" />
+                      </div>
+                      <h3 className="font-londrina text-3xl sm:text-4xl font-black text-white uppercase tracking-tighter">
                         Ingredientes
                       </h3>
                     </div>
-                    <div className="bg-white/5 rounded-2xl p-6 sm:p-7 lg:p-8 border border-white/10">
-                      <p className="font-montserrat text-gray-300 text-sm sm:text-base lg:text-lg leading-relaxed break-words">
+                    <div className="bg-white/5 rounded-3xl p-8 sm:p-10 border border-white/10 backdrop-blur-sm">
+                      <p className="font-montserrat text-gray-200 text-lg sm:text-xl leading-relaxed font-medium">
                         {product.details.ingredients.join(', ')}
                       </p>
                     </div>
-                  </div>
+                  </motion.div>
 
-                  {/* Tabela Nutricional */}
-                  <div>
-                    <h3 className="font-londrina text-xl sm:text-2xl lg:text-3xl font-black text-white mb-5 uppercase tracking-tight">
+                  {/* Card: Tabela Nutricional */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.25 }}
+                  >
+                    <h3 className="font-londrina text-3xl sm:text-4xl font-black text-white mb-6 uppercase tracking-tighter">
                       Tabela Nutricional
                     </h3>
-                    <div className="bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
-                      <div className="p-5 sm:p-6 lg:p-7 border-b border-white/10">
-                        <p className="font-montserrat text-xs sm:text-sm lg:text-base text-gray-400">
+                    <div className="bg-white/5 rounded-3xl border border-white/10 overflow-hidden backdrop-blur-sm">
+                      <div className="p-8 sm:p-10 border-b border-white/10">
+                        <p className="font-montserrat text-base sm:text-lg text-gray-400 font-medium">
                           Porção: <span className="text-white font-semibold">{product.details.nutritionalInfo.servingSize}</span>
                         </p>
                       </div>
                       <div className="divide-y divide-white/10">
-                        <div className="p-4 sm:p-5 lg:p-6 flex justify-between items-center">
-                          <span className="font-montserrat text-sm sm:text-base lg:text-lg text-gray-300">Valor Energético</span>
-                          <span className="font-montserrat text-sm sm:text-base lg:text-lg text-white font-bold">{product.details.nutritionalInfo.calories}</span>
-                        </div>
-                        <div className="p-4 sm:p-5 lg:p-6 flex justify-between items-center">
-                          <span className="font-montserrat text-sm sm:text-base lg:text-lg text-gray-300">Gorduras Totais</span>
-                          <span className="font-montserrat text-sm sm:text-base lg:text-lg text-white font-bold">{product.details.nutritionalInfo.totalFat}</span>
-                        </div>
-                        <div className="p-4 sm:p-5 lg:p-6 flex justify-between items-center">
-                          <span className="font-montserrat text-sm sm:text-base lg:text-lg text-gray-300">Gorduras Saturadas</span>
-                          <span className="font-montserrat text-sm sm:text-base lg:text-lg text-white font-bold">{product.details.nutritionalInfo.saturatedFat}</span>
-                        </div>
-                        <div className="p-4 sm:p-5 lg:p-6 flex justify-between items-center">
-                          <span className="font-montserrat text-sm sm:text-base lg:text-lg text-gray-300">Gorduras Trans</span>
-                          <span className="font-montserrat text-sm sm:text-base lg:text-lg text-white font-bold">{product.details.nutritionalInfo.transFat}</span>
-                        </div>
-                        <div className="p-4 sm:p-5 lg:p-6 flex justify-between items-center">
-                          <span className="font-montserrat text-sm sm:text-base lg:text-lg text-gray-300">Carboidratos</span>
-                          <span className="font-montserrat text-sm sm:text-base lg:text-lg text-white font-bold">{product.details.nutritionalInfo.carbs}</span>
-                        </div>
-                        <div className="p-4 sm:p-5 lg:p-6 flex justify-between items-center">
-                          <span className="font-montserrat text-sm sm:text-base lg:text-lg text-gray-300">Proteínas</span>
-                          <span className="font-montserrat text-sm sm:text-base lg:text-lg text-white font-bold">{product.details.nutritionalInfo.protein}</span>
-                        </div>
-                        <div className="p-4 sm:p-5 lg:p-6 flex justify-between items-center">
-                          <span className="font-montserrat text-sm sm:text-base lg:text-lg text-gray-300">Sódio</span>
-                          <span className="font-montserrat text-sm sm:text-base lg:text-lg text-white font-bold">{product.details.nutritionalInfo.sodium}</span>
-                        </div>
+                        {[
+                          { label: 'Valor Energético', value: product.details.nutritionalInfo.calories },
+                          { label: 'Gorduras Totais', value: product.details.nutritionalInfo.totalFat },
+                          { label: 'Gorduras Saturadas', value: product.details.nutritionalInfo.saturatedFat },
+                          { label: 'Gorduras Trans', value: product.details.nutritionalInfo.transFat },
+                          { label: 'Carboidratos', value: product.details.nutritionalInfo.carbs },
+                          { label: 'Proteínas', value: product.details.nutritionalInfo.protein },
+                          { label: 'Sódio', value: product.details.nutritionalInfo.sodium },
+                        ].map((item, index) => (
+                          <div 
+                            key={index}
+                            className="p-6 sm:p-8 flex justify-between items-center"
+                          >
+                            <span className="font-montserrat text-base sm:text-lg text-gray-300 font-medium">
+                              {item.label}
+                            </span>
+                            <span className="font-montserrat text-base sm:text-lg text-white font-bold">
+                              {item.value}
+                            </span>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 </div>
               </div>
             </motion.div>
