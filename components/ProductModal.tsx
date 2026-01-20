@@ -86,15 +86,18 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                   <div className="flex justify-center mb-8 sm:mb-10">
                     <div className="relative w-64 h-80 sm:w-72 sm:h-96 flex items-center justify-center">
                       {/* Gradiente radial de spotlight mais intenso */}
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.3)_0%,_rgba(255,255,255,0.1)_40%,_transparent_70%)] rounded-3xl" />
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.5)_0%,_rgba(255,255,255,0.2)_40%,_transparent_70%)] rounded-3xl" />
                       
-                      {/* Imagem do produto - Máximo brilho e vivacidade */}
+                      {/* Fundo sólido para eliminar transparência */}
+                      <div className="absolute inset-0 bg-neutral-900/20 rounded-3xl" />
+                      
+                      {/* Imagem do produto - Máximo brilho, sem transparência, em destaque */}
                       <img
                         src={product.imageUrl}
                         alt={`${product.name} - ${product.flavor}`}
-                        className="relative w-full h-full object-contain"
+                        className="relative w-full h-full object-contain z-10"
                         style={{
-                          filter: 'brightness(1.5) contrast(1.25) saturate(1.5) drop-shadow(0 0 50px rgba(255,255,255,0.4))',
+                          filter: 'brightness(1.7) contrast(1.4) saturate(1.7) drop-shadow(0 0 70px rgba(255,255,255,0.6))',
                           opacity: 1,
                           mixBlendMode: 'normal',
                         }}
@@ -133,15 +136,15 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                   </div>
 
                   {/* Ingredientes */}
-                  <div className="mb-6 sm:mb-8">
-                    <div className="flex items-center gap-3 mb-4">
-                      <Info className="w-5 h-5 text-yellow-400" />
-                      <h3 className="font-londrina text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
+                  <div className="mb-8 sm:mb-10">
+                    <div className="flex items-center gap-3 mb-5">
+                      <Info className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
+                      <h3 className="font-londrina text-xl sm:text-2xl lg:text-3xl font-black text-white uppercase tracking-tight">
                         Ingredientes
                       </h3>
                     </div>
-                    <div className="bg-white/5 rounded-2xl p-4 sm:p-6 border border-white/10">
-                      <p className="font-montserrat text-gray-300 text-sm sm:text-base leading-relaxed">
+                    <div className="bg-white/5 rounded-2xl p-6 sm:p-7 lg:p-8 border border-white/10">
+                      <p className="font-montserrat text-gray-300 text-sm sm:text-base lg:text-lg leading-relaxed break-words">
                         {product.details.ingredients.join(', ')}
                       </p>
                     </div>

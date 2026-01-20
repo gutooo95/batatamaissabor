@@ -15,7 +15,7 @@ const Origin: React.FC = () => {
         className="absolute inset-0 z-0 opacity-40"
       >
         <img 
-          src="/images/lavouras/lavoura-background.png" 
+          src="/images/lavouras/background-lavoura.jpg" 
           alt="Lavouras de Batata" 
           className="w-full h-full object-cover"
           loading="lazy"
