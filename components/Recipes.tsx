@@ -21,7 +21,7 @@ const Recipes: React.FC = () => {
 
   return (
     <>
-      <section id="receitas" className="py-12 sm:py-16 md:py-20 lg:py-24 bg-neutral-950 relative">
+      <section id="receitas" className="py-16 sm:py-20 md:py-24 lg:py-32 bg-neutral-950 relative pb-16 sm:pb-20 md:pb-24 lg:pb-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}

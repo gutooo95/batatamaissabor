@@ -22,7 +22,7 @@ const Fleet: React.FC = () => {
   ];
 
   return (
-    <section id="frota" className="relative py-16 sm:py-20 md:py-24 lg:py-32 overflow-hidden bg-neutral-900 text-white">
+    <section id="frota" className="relative py-16 sm:py-20 md:py-24 lg:py-32 overflow-hidden bg-neutral-900 text-white pb-16 sm:pb-20 md:pb-24 lg:pb-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 md:gap-16 items-center">
           
@@ -102,18 +102,21 @@ const Fleet: React.FC = () => {
                 loading="lazy"
                 decoding="async"
                 onError={(e) => {
-                  // Fallback: mostra placeholder se imagem não existir
+                  // Fallback: esconde imagem se não existir
                   e.currentTarget.style.display = 'none';
+                  // Mostra placeholder apenas se imagem falhar
+                  const placeholder = e.currentTarget.parentElement?.querySelector('.opacity-0');
+                  if (placeholder) {
+                    placeholder.classList.remove('opacity-0');
+                    placeholder.classList.add('opacity-100');
+                  }
                 }}
               />
               
               {/* Placeholder (mostrado apenas se imagem não carregar) */}
-              <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+              <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none opacity-0">
                 <div className="text-center px-6">
                   <Truck className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 text-yellow-400/30 mx-auto mb-4" />
-                  <p className="font-montserrat text-gray-400 text-sm sm:text-base">
-                    Adicione a imagem em: /images/frota/caminhao-frota.jpg
-                  </p>
                 </div>
               </div>
               

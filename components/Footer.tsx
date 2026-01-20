@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Instagram, Facebook, Phone, MapPin, Mail, Award } from 'lucide-react';
+import { Instagram, Facebook, Phone, MapPin, Mail, Award, FileText } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
@@ -65,7 +65,7 @@ const Footer: React.FC = () => {
             <h4 className="font-montserrat font-black text-base sm:text-lg mb-6 md:mb-8 uppercase tracking-widest border-l-4 border-yellow-400 pl-4">
               Links Rápidos
             </h4>
-            <ul className="space-y-4 font-montserrat font-semibold text-gray-300 text-sm sm:text-base text-center md:text-left">
+            <ul className="space-y-4 font-montserrat font-semibold text-gray-300 text-sm sm:text-base text-center md:text-left mb-6">
               <li>
                 <a href="#produtos" className="hover:text-yellow-400 transition-colors duration-300">
                   Produtos
@@ -87,6 +87,22 @@ const Footer: React.FC = () => {
                 </a>
               </li>
             </ul>
+            
+            {/* Botão Download Catálogo */}
+            <motion.a
+              href="/catalogo/Catálogo Batata Mais Sabor (ATUALIZADO).pdf"
+              download="Catálogo Batata Mais Sabor (ATUALIZADO).pdf"
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-3 px-6 py-3 bg-yellow-400/10 hover:bg-yellow-400/20 border border-yellow-400/30 hover:border-yellow-400/50 rounded-xl text-yellow-400 font-montserrat font-semibold text-sm sm:text-base transition-all duration-300 group"
+            >
+              <FileText className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <span>Baixar Catálogo 2026</span>
+            </motion.a>
           </motion.div>
 
           {/* Lado Direito: Contatos e Redes Sociais */}
@@ -150,11 +166,20 @@ const Footer: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Copyright */}
+        {/* Copyright e Links Legais */}
         <div className="pt-8 sm:pt-10 md:pt-12 border-t border-white/10 text-center">
-          <p className="font-montserrat text-xs sm:text-sm text-gray-500">
+          <p className="font-montserrat text-xs sm:text-sm text-gray-500 mb-3">
             &copy; {new Date().getFullYear()} Batatas Mais Sabor Alimentos. Todos os direitos reservados.
           </p>
+          <div className="flex items-center justify-center gap-2 text-xs text-gray-600">
+            <a href="/politica-privacidade" className="hover:text-yellow-400 transition-colors duration-300">
+              Política de Privacidade
+            </a>
+            <span className="text-gray-600">|</span>
+            <a href="/termos-uso" className="hover:text-yellow-400 transition-colors duration-300">
+              Termos de Uso
+            </a>
+          </div>
         </div>
       </div>
     </footer>
