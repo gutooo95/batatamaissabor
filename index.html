@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Batatas Mais Sabor | O Sabor da Nossa Terra</title>
+    
+    <!-- DNS Prefetch e Preconnect para recursos externos -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Preload de recursos críticos -->
+    <link rel="preload" href="/images/logo/SEM%20FUNDO.png" as="image" type="image/png">
+    <link rel="preload" href="/images/hero/hero-background.png" as="image" type="image/png">
+    
+    <!-- Carregamento otimizado de fontes com font-display: swap -->
+    <link href="https://fonts.googleapis.com/css2?family=Londrina+Solid:wght@400;900&family=Montserrat:wght@400;600;700;900&family=Pacifico&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS - Carregado de forma assíncrona -->
+    <script src="https://cdn.tailwindcss.com" defer></script>
+    <style>
+      /* Prevenção de scroll horizontal global */
+      html, body {
+        overflow-x: hidden;
+        max-width: 100vw;
+      }
+      
+      :root {
+        --color-primary: #D32F2F;
+        --color-secondary: #FBC02D;
+        --color-accent: #F57C00;
+      }
+      body {
+        font-family: 'Montserrat', sans-serif;
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+        background-color: #0a0a0a;
+      }
+      
+      /* Smooth Scroll com Easing Premium */
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 80px;
+      }
+      
+      /* Transições de Opacidade entre Seções */
+      section {
+        transition: opacity 0.6s ease-out;
+      }
+      
+      /* Scrollbar Personalizada para Luxo */
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+      
+      ::-webkit-scrollbar-track {
+        background: #1a1a1a;
+      }
+      
+      ::-webkit-scrollbar-thumb {
+        background: #8B0000;
+        border-radius: 5px;
+      }
+      
+      ::-webkit-scrollbar-thumb:hover {
+        background: #A00000;
+      }
+      
+      /* Garantia de responsividade total */
+      * {
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      
+      /* Previne overflow horizontal */
+      html, body {
+        overflow-x: hidden;
+        width: 100%;
+      }
+      
+      /* Garante que seções full-width funcionem corretamente */
+      section[class*="w-screen"] {
+        position: relative;
+      }
+      
+      /* Responsive images */
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+      
+      /* Prevent text overflow */
+      * {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+      
+      /* Smooth scrolling for mobile */
+      @media (prefers-reduced-motion: no-preference) {
+        html {
+          scroll-behavior: smooth;
+        }
+      }
+      
+      /* Otimizações de performance */
+      img {
+        image-rendering: -webkit-optimize-contrast; /* Edge, Chrome, Safari */
+        image-rendering: -moz-crisp-edges; /* Firefox */
+        image-rendering: pixelated; /* Fallback */
+      }
+      
+      /* Remove fundo branco de imagens na Hero - Transparência perfeita */
+      #inicio img[alt="Batata"],
+      #inicio img[alt="Embalagem"],
+      #inicio img[alt="Embalagem Churrasco"] {
+        mix-blend-mode: normal !important;
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        filter: drop-shadow(0 20px 30px rgba(0,0,0,0.5)) !important;
+      }
+      
+      /* Imagens de produtos - mix-blend-mode multiply para integrar ao fundo colorido */
+      #produtos img[alt*="Batata"],
+      #produtos img[alt*="Embalagem"],
+      #produtos img[src*="embalagens"] {
+        mix-blend-mode: multiply !important;
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+        filter: drop-shadow(0 8px 16px rgba(0,0,0,0.3)) !important;
+      }
+      
+      /* Garante que containers não tenham fundo branco */
+      #inicio .absolute[style*="width"],
+      #produtos .absolute[style*="width"],
+      #produtos .absolute {
+        background: transparent !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+      }
+      
+      /* Remove qualquer sombra branca */
+      #inicio [class*="drop-shadow"],
+      #produtos [class*="drop-shadow"] {
+        background: transparent !important;
+      }
+      
+      /* Força transparência em todos os wrappers de imagem */
+      #inicio [style*="backgroundColor"],
+      #produtos [style*="backgroundColor"] {
+        background-color: transparent !important;
+      }
+      
+      /* Centralização perfeita de imagens nos cards */
+      #produtos img {
+        object-position: center !important;
+        margin: 0 auto !important;
+      }
+      
+      /* Garante que fundos brancos sejam removidos */
+      #inicio img[alt="Batata"]::after {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        background: rgba(139, 0, 0, 0.9);
+        mix-blend-mode: multiply;
+        pointer-events: none;
+        z-index: -1;
+      }
+      
+      /* Preload crítico */
+      .critical-image {
+        content-visibility: auto;
+      }
+      
+      /* Otimização de renderização */
+      * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
+      /* Prevenção de layout shift */
+      img[loading="lazy"] {
+        min-height: 200px;
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+      }
+      
+      @keyframes loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+      .font-londrina { font-family: 'Londrina Solid', cursive; }
+      .font-pacifico { font-family: 'Pacifico', cursive; }
+      .font-montserrat { font-family: 'Montserrat', sans-serif; }
+
+      /* Custom background texture */
+      .bg-texture {
+        background-image: url("https://www.transparenttextures.com/patterns/natural-paper.png");
+      }
+    </style>
+    
+    <!-- Import Map para módulos ES -->
+    <script type="importmap">
+    {
+      "imports": {
+        "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+        "react/": "https://esm.sh/react@^19.2.3/",
+        "react": "https://esm.sh/react@^19.2.3",
+        "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+        "framer-motion": "https://esm.sh/framer-motion@^12.27.1"
+      }
+    }
+    </script>
+    
+    <!-- CSS adicional -->
+    <link rel="stylesheet" href="/index.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
