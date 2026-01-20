@@ -386,14 +386,14 @@ const Hero: React.FC = () => {
           .map((element, index) => renderFloatingElement(element, index))}
       </div>
 
-      {/* Layer 3: Midground - Pacote Churrasco (ATRÁS do título) - Ajustado no mobile */}
-      <div className="absolute inset-0 z-[15] pointer-events-none">
+      {/* Layer 3: Midground - Pacote Churrasco (ATRÁS de tudo no mobile) */}
+      <div className="absolute inset-0 z-[5] md:z-[15] pointer-events-none">
         {floatingElements
           .filter(el => el.layer === 'midground')
           .map((element, index) => {
-            // No mobile, ajusta posição para não cobrir texto
-            const mobileY = isMobile ? element.y + 10 : element.y;
-            const mobileX = isMobile ? 50 : element.x; // Centraliza no mobile
+            // No mobile: posição para baixo e para o lado, escala 70%, z-index baixo
+            const mobileY = isMobile ? 60 : element.y; // Mais abaixo no mobile
+            const mobileX = isMobile ? 70 : element.x; // Para o lado direito no mobile
             return (
               <motion.div
                 key={element.id}
@@ -401,11 +401,11 @@ const Hero: React.FC = () => {
                 style={{
                   left: `${mobileX}%`,
                   top: `${mobileY}%`,
-                  width: `${isMobile ? element.size * 0.75 : element.size}px`,
-                  height: `${isMobile ? element.size * 0.75 : element.size}px`,
+                  width: `${isMobile ? element.size * 0.7 : element.size}px`,
+                  height: `${isMobile ? element.size * 0.7 : element.size}px`,
                   filter: element.blur > 0 ? `blur(${element.blur}px)` : 'none',
                   opacity: element.opacity,
-                  zIndex: 15,
+                  zIndex: isMobile ? 5 : 15, // Z-index baixo no mobile (atrás de tudo)
                   backgroundColor: 'transparent',
                   background: 'transparent',
                 }}
@@ -453,8 +453,8 @@ const Hero: React.FC = () => {
           })}
       </div>
 
-      {/* Layer 4: Título e Conteúdo Principal (ACIMA do pacote) - Centralizado Perfeitamente */}
-      <div className="absolute inset-0 flex items-center justify-center z-[20] text-center text-white">
+      {/* Layer 4: Título e Conteúdo Principal (ACIMA do pacote) - Mobile-First */}
+      <div className="absolute inset-0 flex items-center justify-center z-[20] text-center text-white pt-24 sm:pt-0">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -462,59 +462,58 @@ const Hero: React.FC = () => {
           style={{ opacity }}
           className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"
         >
-          {/* Slogan acima do título */}
+          {/* Slogan acima do título - Cor dourada nítida no mobile */}
           <motion.span 
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.8 }}
-            className="font-pacifico text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-[#FFD700] mb-4 sm:mb-6 block drop-shadow-lg relative z-[21]"
+            className="font-pacifico text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl mb-4 sm:mb-5 md:mb-6 block relative z-[21]"
             style={{
-              textShadow: '0 2px 8px rgba(255, 215, 0, 0.4), 0 1px 2px rgba(0,0,0,0.5)',
+              color: '#FFD700',
+              textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+              filter: 'drop-shadow(0 2px 4px rgba(255, 215, 0, 0.3))',
             }}
           >
             A verdadeira explosão de sabor!
           </motion.span>
           
-          {/* Título Principal com Gradiente Suave - Sem filtros de sombra na frente */}
+          {/* Título Principal - Branco Puro/Amarelo Vibrante, 100% visibilidade */}
           <motion.h1 
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.5, duration: 1 }}
-            className="font-londrina font-black mb-8 sm:mb-10 md:mb-12 leading-none tracking-tighter relative z-[21]"
+            className="font-londrina font-black mb-6 sm:mb-8 md:mb-10 lg:mb-12 leading-tight tracking-tighter relative z-[21] text-6xl sm:text-7xl md:text-8xl lg:text-9xl"
             style={{
-              fontSize: 'clamp(2rem, 8vw, 5rem)',
-              background: 'linear-gradient(to bottom, #FFFFFF, #F5F5DC)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
+              color: '#FFFFFF',
+              textShadow: '0 2px 8px rgba(0,0,0,0.4)',
+              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
             }}
           >
             BATATAS <br /> 
             <span 
               style={{
-                background: 'linear-gradient(to bottom, #FFD700, #FFA500)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
+                color: '#FFD700',
+                textShadow: '0 2px 8px rgba(0,0,0,0.4)',
+                filter: 'drop-shadow(0 2px 4px rgba(255, 215, 0, 0.3))',
               }}
             >
               MAIS SABOR
             </span>
           </motion.h1>
 
-          {/* Botões CTA - Alinhados lado a lado, centralizados, com gap idêntico */}
+          {/* Botões CTA - Empilhados no mobile, lado a lado no desktop */}
           <motion.div 
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.9, duration: 0.8 }}
-            className="flex flex-row gap-6 sm:gap-8 justify-center items-center relative z-[25]"
+            className="flex flex-col sm:flex-row gap-4 sm:gap-6 md:gap-8 justify-center items-center relative z-[25] w-full sm:w-auto"
           >
-            {/* Botão Principal */}
+            {/* Botão Principal - 100% largura no mobile */}
             <motion.a
               href="#produtos"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="group relative px-8 sm:px-12 md:px-16 py-4 sm:py-5 md:py-6 rounded-2xl overflow-hidden flex items-center gap-3 sm:gap-4"
+              className="group relative w-full sm:w-auto px-8 sm:px-12 md:px-16 py-4 sm:py-5 md:py-6 rounded-2xl overflow-hidden flex items-center justify-center gap-3 sm:gap-4"
               style={{
                 background: 'rgba(255, 255, 255, 0.1)',
                 backdropFilter: 'blur(20px) saturate(180%)',
@@ -549,12 +548,12 @@ const Hero: React.FC = () => {
               </motion.div>
             </motion.a>
 
-            {/* Botão Secundário */}
+            {/* Botão Secundário - 100% largura no mobile */}
             <motion.a
               href="#origem"
               whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.15)" }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 sm:px-12 md:px-16 py-4 sm:py-5 md:py-6 rounded-2xl flex items-center gap-2 transition-all"
+              className="w-full sm:w-auto px-8 sm:px-12 md:px-16 py-4 sm:py-5 md:py-6 rounded-2xl flex items-center justify-center gap-2 transition-all"
               style={{
                 background: 'rgba(255, 255, 255, 0.08)',
                 backdropFilter: 'blur(15px) saturate(180%)',

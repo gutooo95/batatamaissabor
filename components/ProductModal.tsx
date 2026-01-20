@@ -97,7 +97,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                 {/* Conteúdo scrollável com padding generoso */}
                 <div className="overflow-y-auto flex-1 px-10 py-10 sm:px-12 sm:py-12">
                   
-                  {/* Imagem do produto - Herói com destaque absoluto */}
+                  {/* Imagem do produto - Iluminada e centralizada, sem transparências */}
                   <div className="flex justify-center mb-12 sm:mb-16">
                     <div className="relative w-56 h-72 sm:w-72 sm:h-96 lg:w-80 lg:h-[28rem] flex items-center justify-center">
                       {/* Glow radial baseado no sabor */}
@@ -108,13 +108,13 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                         }}
                       />
                       
-                      {/* Imagem do produto - 100% opacidade, filtros leves */}
+                      {/* Imagem do produto - Iluminada, sem transparências */}
                       <img
                         src={product.imageUrl}
                         alt={`${product.name} - ${product.flavor}`}
                         className="relative w-full h-full object-contain z-10"
                         style={{
-                          filter: 'brightness(1.1) contrast(1.05) saturate(1.1)',
+                          filter: 'brightness(1.15) contrast(1.1) saturate(1.15) drop-shadow(0 0 20px rgba(255,255,255,0.2))',
                           opacity: 1,
                           mixBlendMode: 'normal',
                         }}
@@ -203,27 +203,27 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                     <div className="bg-white/5 rounded-3xl border border-white/10 overflow-hidden backdrop-blur-sm">
                       <div className="p-8 sm:p-10 border-b border-white/10">
                         <p className="font-montserrat text-base sm:text-lg text-gray-400 font-medium">
-                          Porção: <span className="text-white font-semibold">{product.details.nutritionalInfo.servingSize}</span>
+                          Porção: <span className="text-white font-semibold">25g (1 porção)</span>
                         </p>
                       </div>
                       <div className="divide-y divide-white/10">
                         {[
-                          { label: 'Valor Energético', value: product.details.nutritionalInfo.calories },
-                          { label: 'Gorduras Totais', value: product.details.nutritionalInfo.totalFat },
-                          { label: 'Gorduras Saturadas', value: product.details.nutritionalInfo.saturatedFat },
-                          { label: 'Gorduras Trans', value: product.details.nutritionalInfo.transFat },
-                          { label: 'Carboidratos', value: product.details.nutritionalInfo.carbs },
-                          { label: 'Proteínas', value: product.details.nutritionalInfo.protein },
-                          { label: 'Sódio', value: product.details.nutritionalInfo.sodium },
+                          { label: 'Valor Energético', value: '153 kcal' },
+                          { label: 'Carboidratos', value: '15g' },
+                          { label: 'Proteínas', value: '1,3g' },
+                          { label: 'Gorduras Totais', value: '9,8g' },
+                          { label: 'Gorduras Saturadas', value: '4,4g' },
+                          { label: 'Sódio', value: '99mg' },
+                          { label: 'Fibra Alimentar', value: '1,5g' },
                         ].map((item, index) => (
                           <div 
                             key={index}
                             className="p-6 sm:p-8 flex justify-between items-center"
                           >
-                            <span className="font-montserrat text-base sm:text-lg text-gray-300 font-medium">
+                            <span className="font-montserrat text-base sm:text-lg text-gray-300 font-light">
                               {item.label}
                             </span>
-                            <span className="font-montserrat text-base sm:text-lg text-white font-bold">
+                            <span className="font-montserrat text-base sm:text-lg text-white font-semibold">
                               {item.value}
                             </span>
                           </div>
