@@ -38,79 +38,107 @@ const Recipes: React.FC = () => {
             </h2>
           </motion.div>
 
-          {/* Grid de Cards - 3 Receitas Fixas com Glassmorphism */}
+          {/* Grid de Cards - 3 Receitas Fixas com Imagens Protagonistas */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
-            {FIXED_RECIPES.map((recipe, index) => (
-              <motion.div
-                key={recipe.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.6, delay: index * 0.15, ease: "easeOut" }}
-                whileHover={{ scale: 1.03, y: -8 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => handleCardClick(recipe)}
-                className="group relative h-72 sm:h-80 md:h-96 rounded-3xl overflow-hidden cursor-pointer transition-all duration-500 w-[90%] sm:w-full mx-auto"
-              >
-                {/* Imagem da Receita - Parte Superior com Transparência */}
-                <div 
-                  className="absolute inset-0 top-0 h-[50%] bg-cover bg-center rounded-t-3xl opacity-20 group-hover:opacity-30 transition-opacity duration-500"
-                  style={{
-                    backgroundImage: `url(/images/receitas/${recipe.imageName === 'pizza-com-batata-palha' ? 'Pizza-de-batata-palha.jpg' : recipe.imageName})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                  }}
-                />
-                
-                {/* Glassmorphism Background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-neutral-900/80 via-neutral-800/70 to-neutral-900/80 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl group-hover:border-yellow-400/30 transition-all duration-500" />
-                
-                {/* Overlay de brilho sutil */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
-
-                {/* Conteúdo do card */}
-                <div className="relative h-full flex flex-col justify-end p-6 sm:p-8 z-[4]">
-                  <motion.h3
-                    className="font-londrina text-3xl sm:text-4xl md:text-5xl text-white font-black mb-3 drop-shadow-2xl"
+            {FIXED_RECIPES.map((recipe, index) => {
+              return (
+                <motion.div
+                  key={recipe.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.6, delay: index * 0.15, ease: "easeOut" }}
+                  whileHover={{ y: -8 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => handleCardClick(recipe)}
+                  className="group relative h-72 sm:h-80 md:h-96 rounded-[2.5rem] overflow-hidden cursor-pointer transition-all duration-500 w-[90%] sm:w-full mx-auto"
+                >
+                  {/* Imagem da Receita - 100% Nítida, Protagonista com Máscara Gradiente Refinada */}
+                  <motion.div 
+                    className="absolute inset-0 w-full h-full overflow-hidden z-[1]"
                     style={{
-                      textShadow: '0 4px 8px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.8), 0 0 20px rgba(251, 191, 36, 0.3)',
+                      maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%)',
+                      WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%)',
                     }}
                   >
-                    {recipe.title}
-                  </motion.h3>
-                  
-                  <p className="font-montserrat text-yellow-400/90 text-sm sm:text-base font-semibold mb-4">
-                    Com Batata Palha MAIS SABOR
-                  </p>
-
-                  {/* Indicador de clique com glassmorphism */}
-                  <motion.div
-                    className="mt-4 flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 group-hover:bg-yellow-400/20 group-hover:border-yellow-400/40 transition-all duration-300"
-                    initial={{ opacity: 0.8 }}
-                    whileHover={{ opacity: 1 }}
-                  >
-                    <span className="font-montserrat text-xs sm:text-sm font-semibold uppercase tracking-wider text-white">
-                      Ver Receita
-                    </span>
-                    <motion.svg
-                      className="w-4 h-4 text-yellow-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      animate={{ x: [0, 5, 0] }}
-                      transition={{ repeat: Infinity, duration: 1.5 }}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </motion.svg>
+                    <motion.img
+                      src={`/images/receitas/${recipe.imageName}`}
+                      alt={recipe.title}
+                      className="w-full h-full object-cover object-center"
+                      style={{
+                        filter: 'saturate(1.5) brightness(1.1)',
+                      }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                      onError={(e) => {
+                        // Fallback: placeholder elegante com ícone de chef
+                        const target = e.currentTarget;
+                        target.style.display = 'none';
+                        if (target.parentElement) {
+                          const placeholder = document.createElement('div');
+                          placeholder.className = 'absolute inset-0 flex items-center justify-center bg-neutral-800';
+                          placeholder.innerHTML = `
+                            <div class="text-center">
+                              <svg class="w-16 h-16 mx-auto mb-2 text-yellow-400/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                              </svg>
+                              <p class="text-gray-500 text-xs">Imagem não encontrada</p>
+                            </div>
+                          `;
+                          target.parentElement.appendChild(placeholder);
+                        }
+                      }}
+                    />
                   </motion.div>
-                </div>
+                  
+                  {/* Fundo escuro sólido na parte inferior para legibilidade total */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-neutral-900/80 to-neutral-900 rounded-[2.5rem] z-[2]" />
+                  
+                  {/* Borda interna ultra-fina para definição Apple */}
+                  <div className="absolute inset-0 border border-white/5 rounded-[2.5rem] pointer-events-none z-[15]" />
+                  
+                  {/* Glassmorphism Background - Apenas para efeito visual, sem blur na imagem */}
+                  <div className="absolute inset-0 backdrop-blur-xl border border-white/10 rounded-[2.5rem] shadow-2xl group-hover:border-yellow-400/30 transition-all duration-500 pointer-events-none z-[3]" />
 
-                {/* Efeito de brilho no hover */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-400/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                </div>
-              </motion.div>
-            ))}
+                  {/* Conteúdo do card - Parte inferior com contraste total e z-index alto */}
+                  <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-8 z-[20]">
+                    <motion.h3
+                      className="font-londrina text-2xl sm:text-3xl md:text-4xl text-white font-black mb-2 drop-shadow-2xl"
+                      style={{
+                        textShadow: '0 4px 8px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.8)',
+                      }}
+                    >
+                      {recipe.title}
+                    </motion.h3>
+                    
+                    <p className="font-montserrat text-yellow-400/90 text-xs sm:text-sm font-semibold mb-4">
+                      Com Batata Palha MAIS SABOR
+                    </p>
+
+                    {/* Botão Minimalista Centralizado */}
+                    <motion.div
+                      className="flex items-center justify-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 group-hover:bg-yellow-400/20 group-hover:border-yellow-400/40 transition-all duration-300 w-fit mx-auto"
+                      initial={{ opacity: 0.8 }}
+                      whileHover={{ opacity: 1 }}
+                    >
+                      <span className="font-montserrat text-xs sm:text-sm font-semibold uppercase tracking-wider text-white">
+                        VER RECEITA
+                      </span>
+                      <motion.svg
+                        className="w-4 h-4 text-yellow-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        animate={{ x: [0, 5, 0] }}
+                        transition={{ repeat: Infinity, duration: 1.5 }}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </motion.svg>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>

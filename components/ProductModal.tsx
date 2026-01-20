@@ -94,8 +94,8 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                   </div>
                 </div>
 
-                {/* Conteúdo scrollável com padding generoso */}
-                <div className="overflow-y-auto flex-1 px-10 py-10 sm:px-12 sm:py-12">
+                {/* Conteúdo scrollável com padding generoso (respiro Apple) */}
+                <div className="overflow-y-auto flex-1 px-8 py-8 sm:px-10 sm:py-10 md:px-12 md:py-12">
                   
                   {/* Imagem do produto - Iluminada e centralizada, sem transparências */}
                   <div className="flex justify-center mb-12 sm:mb-16">

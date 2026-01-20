@@ -61,50 +61,45 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
           }}
           className="fixed inset-0 z-[9999] bg-neutral-950 flex flex-col items-center justify-center"
         >
-          {/* Logo com animação de mola */}
+          {/* Logo com animação de escala suave (0.9 a 1.0) */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ 
               opacity: 1, 
               scale: 1,
             }}
             transition={{
-              type: "spring",
-              stiffness: 200,
-              damping: 20,
-              mass: 1,
+              duration: 0.8,
+              ease: [0.22, 1, 0.36, 1],
             }}
             className="mb-10"
           >
-            <motion.div
-              animate={{
-                filter: progress >= 100 ? 'brightness(1.3)' : 'brightness(1)',
-              }}
-              transition={{ duration: 0.3 }}
-            >
-              <img
-                src="/images/logo/SEM FUNDO.png"
-                alt="Batatas Mais Sabor"
-                className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 object-contain"
-                onError={(e) => {
-                  // Fallback caso a imagem não carregue
-                  const target = e.currentTarget;
+            <img
+              src="/images/logo/SEM%20FUNDO.png"
+              alt="Batatas Mais Sabor"
+              className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 object-contain"
+              onError={(e) => {
+                // Fallback caso a imagem não carregue
+                const target = e.currentTarget;
+                if (target.src.includes('SEM%20FUNDO') || target.src.includes('SEM FUNDO')) {
+                  target.src = '/images/logo/Logo%20Batata%20mais%20Sabor.png';
+                } else {
                   target.style.display = 'none';
-                }}
-              />
-            </motion.div>
+                }
+              }}
+            />
           </motion.div>
 
-          {/* Barra de Progresso */}
-          <div className="relative w-[200px] h-[2px] bg-white/10 rounded-full overflow-hidden">
+          {/* Barra de Progresso - 200px, 1px de altura */}
+          <div className="relative w-[200px] h-[1px] bg-white/10 overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
               transition={{
-                duration: 0.016, // Atualiza suavemente
+                duration: 0.016,
                 ease: "easeOut",
               }}
-              className="absolute left-0 top-0 h-full bg-white rounded-full"
+              className="absolute left-0 top-0 h-full bg-white"
             />
           </div>
         </motion.div>

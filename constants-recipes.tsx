@@ -38,7 +38,7 @@ export const FIXED_RECIPES: Recipe[] = [
   {
     id: '2',
     title: 'Pizza com Batata Palha',
-    imageName: 'pizza-com-batata-palha',
+    imageName: 'Pizza-de-batata-palha.jpg',
     time: '45 MIN',
     servings: '6 FATIAS',
     ingredients: [

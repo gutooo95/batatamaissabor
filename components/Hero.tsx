@@ -16,7 +16,11 @@ interface FloatingElement {
   layer: 'foreground' | 'midground' | 'background';
 }
 
-const Hero: React.FC = () => {
+interface HeroProps {
+  isPreloaderComplete?: boolean;
+}
+
+const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
   const opacity = useTransform(scrollY, [0, 400], [1, 0]);
@@ -66,13 +70,13 @@ const Hero: React.FC = () => {
     const elements: FloatingElement[] = [];
     
     if (mobile) {
-      // MOBILE: Apenas pacote Churrasco e 1 batata de fundo
+      // MOBILE: Pacote Churrasco no canto inferior
       elements.push({
         id: 10,
         type: 'package',
-        x: 50, // Centralizado
-        y: 40, // Mais abaixo para não cobrir texto
-        size: 180, // Menor no mobile
+        x: 75, // Canto direito
+        y: 65, // Inferior
+        size: 180,
         rotation: -12,
         imageIndex: 0,
         blur: 0,
@@ -81,19 +85,28 @@ const Hero: React.FC = () => {
         layer: 'midground',
       });
       
-      // Apenas 1 batata de fundo no mobile
-      elements.push({
-        id: 20,
-        type: 'potato',
-        x: 80,
-        y: 75,
-        size: 60,
-        rotation: 45,
-        imageIndex: 0,
-        blur: 5,
-        opacity: 0.4,
-        initialDelay: 0.5,
-        layer: 'background',
+      // 3-4 batatas "explodindo" de trás do pacote em direções diferentes
+      const explodingPotatoes = [
+        { x: 70, y: 55, size: 50, rotation: -30, blur: 2 }, // Cima-esquerda
+        { x: 85, y: 60, size: 45, rotation: 45, blur: 3 }, // Cima-direita
+        { x: 65, y: 70, size: 40, rotation: 60, blur: 4 }, // Esquerda
+        { x: 80, y: 75, size: 55, rotation: -45, blur: 2 }, // Direita
+      ];
+      
+      explodingPotatoes.forEach((potato, i) => {
+        elements.push({
+          id: 20 + i,
+          type: 'potato',
+          x: potato.x,
+          y: potato.y,
+          size: potato.size,
+          rotation: potato.rotation,
+          imageIndex: i % 2,
+          blur: potato.blur,
+          opacity: 0.6,
+          initialDelay: 0.4 + i * 0.1,
+          layer: 'background',
+        });
       });
       
       return elements;
@@ -196,22 +209,29 @@ const Hero: React.FC = () => {
     // Não recria elementos, apenas ajusta visibilidade via CSS
   }, [isMobile]);
 
-  // Partículas de sal e tempero (Background - reduzidas no mobile)
-  const saltParticles = Array.from({ length: isMobile ? 10 : 20 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: 2 + Math.random() * 3,
-    delay: Math.random() * 2,
-  }));
+  // Partículas transformadas em batatas e fagulhas com blur cinematográfico
+  const saltParticles = Array.from({ length: isMobile ? 8 : 15 }, (_, i) => {
+    const isPotato = Math.random() > 0.5;
+    const isEdge = Math.random() > 0.7; // 30% nas bordas (mais blur)
+    return {
+      id: i,
+      x: isEdge ? (Math.random() > 0.5 ? Math.random() * 10 : 90 + Math.random() * 10) : Math.random() * 100,
+      y: isEdge ? (Math.random() > 0.5 ? Math.random() * 10 : 90 + Math.random() * 10) : Math.random() * 100,
+      size: isPotato ? (15 + Math.random() * 25) : (3 + Math.random() * 5),
+      delay: Math.random() * 2,
+      isPotato: isPotato,
+      blur: isEdge ? (8 + Math.random() * 12) : (2 + Math.random() * 4), // Muito blur nas bordas
+    };
+  });
 
   // Cria transforms para cada tipo de elemento (hooks devem estar no nível superior)
+  // Parallax diferenciado: batatas explodindo se movem mais rápido que o pacote
   const packageXTransform = useTransform(packageSpringX, (val) => val * 10);
   const packageYTransform = useTransform(packageSpringY, (val) => val * 10);
   const foregroundXTransform = useTransform(springX, (val) => val * 25);
   const foregroundYTransform = useTransform(springY, (val) => val * 25);
-  const backgroundXTransform = useTransform(springX, (val) => val * 5);
-  const backgroundYTransform = useTransform(springY, (val) => val * 5);
+  const backgroundXTransform = useTransform(springX, (val) => val * 8); // Mais rápido para batatas explodindo
+  const backgroundYTransform = useTransform(springY, (val) => val * 8); // Mais rápido para batatas explodindo
   const midgroundXTransform = useTransform(springX, (val) => val * 15);
   const midgroundYTransform = useTransform(springY, (val) => val * 15);
 
@@ -352,30 +372,49 @@ const Hero: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/50" />
       </div>
 
-      {/* Layer 1: Partículas de sal e tempero (Background - opacity reduzida) */}
+      {/* Layer 1: Batatas e fagulhas com blur cinematográfico */}
       <div className="absolute inset-0 z-[1] pointer-events-none">
         {saltParticles.map((particle) => (
           <motion.div
             key={particle.id}
-            className="absolute rounded-full bg-yellow-300/20"
+            className="absolute"
             style={{
               left: `${particle.x}%`,
               top: `${particle.y}%`,
               width: `${particle.size}px`,
               height: `${particle.size}px`,
+              filter: `blur(${particle.blur}px)`,
+              backdropFilter: `blur(${particle.blur}px)`,
             }}
             animate={{
-              y: [-2, 2, -2],
-              x: [-1, 1, -1],
-              opacity: [0.2, 0.4, 0.2],
+              y: [-3, 3, -3],
+              x: [-2, 2, -2],
+              opacity: [0.15, 0.35, 0.15],
+              rotate: particle.isPotato ? [0, 360] : [0, 0],
             }}
             transition={{
-              duration: 3 + Math.random(),
+              duration: 4 + Math.random() * 2,
               repeat: Infinity,
               delay: particle.delay,
               ease: "easeInOut",
             }}
-          />
+          >
+            {particle.isPotato ? (
+              <img
+                src={`/images/potatoes/${potatoImages[particle.id % 2]}`}
+                alt="Batata"
+                className="w-full h-full object-contain opacity-40"
+                style={{
+                  mixBlendMode: 'normal',
+                }}
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+            ) : (
+              <div className="w-full h-full rounded-full bg-yellow-300/30" />
+            )}
+          </motion.div>
         ))}
       </div>
 
@@ -387,13 +426,14 @@ const Hero: React.FC = () => {
       </div>
 
       {/* Layer 3: Midground - Pacote Churrasco (ATRÁS de tudo no mobile) */}
-      <div className="absolute inset-0 z-[5] md:z-[15] pointer-events-none">
+      <div className="absolute inset-0 z-[3] md:z-[15] pointer-events-none">
         {floatingElements
           .filter(el => el.layer === 'midground')
           .map((element, index) => {
-            // No mobile: posição para baixo e para o lado, escala 70%, z-index baixo
-            const mobileY = isMobile ? 60 : element.y; // Mais abaixo no mobile
-            const mobileX = isMobile ? 70 : element.x; // Para o lado direito no mobile
+            // No mobile: posição para baixo e para o lado, escala reduzida, z-index muito baixo
+            const mobileY = isMobile ? 65 : element.y; // Mais abaixo no mobile
+            const mobileX = isMobile ? 75 : element.x; // Para o lado direito no mobile
+            const mobileScale = isMobile ? 0.6 : 1; // Reduzido para 60% no mobile
             return (
               <motion.div
                 key={element.id}
@@ -401,17 +441,17 @@ const Hero: React.FC = () => {
                 style={{
                   left: `${mobileX}%`,
                   top: `${mobileY}%`,
-                  width: `${isMobile ? element.size * 0.7 : element.size}px`,
-                  height: `${isMobile ? element.size * 0.7 : element.size}px`,
+                  width: `${isMobile ? element.size * mobileScale : element.size}px`,
+                  height: `${isMobile ? element.size * mobileScale : element.size}px`,
                   filter: element.blur > 0 ? `blur(${element.blur}px)` : 'none',
-                  opacity: element.opacity,
-                  zIndex: isMobile ? 5 : 15, // Z-index baixo no mobile (atrás de tudo)
+                  opacity: isMobile ? element.opacity * 0.7 : element.opacity, // Mais transparente no mobile
+                  zIndex: isMobile ? 3 : 15, // Z-index muito baixo no mobile (atrás de tudo)
                   backgroundColor: 'transparent',
                   background: 'transparent',
                 }}
                 initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: element.opacity }}
-                transition={{ duration: 0.8, delay: element.initialDelay, ease: [0.16, 1, 0.3, 1] }}
+                animate={isPreloaderComplete ? { scale: 1, opacity: isMobile ? element.opacity * 0.7 : element.opacity } : { scale: 0, opacity: 0 }}
+                transition={{ duration: 0.8, delay: isPreloaderComplete ? element.initialDelay : 0, ease: [0.16, 1, 0.3, 1] }}
               >
                 <motion.div
                   style={{
@@ -462,12 +502,12 @@ const Hero: React.FC = () => {
           style={{ opacity }}
           className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"
         >
-          {/* Slogan acima do título - Cor dourada nítida no mobile */}
+          {/* Slogan acima do título - Cor dourada nítida, mais espaço no mobile */}
           <motion.span 
             initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="font-pacifico text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl mb-4 sm:mb-5 md:mb-6 block relative z-[21]"
+            animate={isPreloaderComplete ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
+            transition={{ delay: isPreloaderComplete ? 0.3 : 0, duration: 0.8 }}
+            className="font-pacifico text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl mb-6 sm:mb-5 md:mb-6 block relative z-[21]"
             style={{
               color: '#FFD700',
               textShadow: '0 2px 4px rgba(0,0,0,0.3)',
@@ -477,12 +517,12 @@ const Hero: React.FC = () => {
             A verdadeira explosão de sabor!
           </motion.span>
           
-          {/* Título Principal - Branco Puro/Amarelo Vibrante, 100% visibilidade */}
+          {/* Título Principal - GIGANTE no mobile, 100% visibilidade, mais espaço */}
           <motion.h1 
             initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.5, duration: 1 }}
-            className="font-londrina font-black mb-6 sm:mb-8 md:mb-10 lg:mb-12 leading-tight tracking-tighter relative z-[21] text-6xl sm:text-7xl md:text-8xl lg:text-9xl"
+            animate={isPreloaderComplete ? { y: 0, opacity: 1 } : { y: 30, opacity: 0 }}
+            transition={{ delay: isPreloaderComplete ? 0.5 : 0, duration: 1 }}
+            className="font-londrina font-black mb-8 sm:mb-8 md:mb-10 lg:mb-12 leading-tight tracking-tighter relative z-[21] text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl"
             style={{
               color: '#FFFFFF',
               textShadow: '0 2px 8px rgba(0,0,0,0.4)',
@@ -501,37 +541,32 @@ const Hero: React.FC = () => {
             </span>
           </motion.h1>
 
-          {/* Botões CTA - Empilhados no mobile, lado a lado no desktop */}
+          {/* Botões CTA - Glass-Premium, mais espaço no mobile */}
           <motion.div 
             initial={{ y: 40, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.9, duration: 0.8 }}
-            className="flex flex-col sm:flex-row gap-4 sm:gap-6 md:gap-8 justify-center items-center relative z-[25] w-full sm:w-auto"
+            animate={isPreloaderComplete ? { y: 0, opacity: 1 } : { y: 40, opacity: 0 }}
+            transition={{ delay: isPreloaderComplete ? 0.9 : 0, duration: 0.8 }}
+            className="flex flex-col sm:flex-row gap-5 sm:gap-6 md:gap-8 justify-center items-center relative z-[25] w-full sm:w-auto px-2 sm:px-0 mt-4 sm:mt-0"
           >
-            {/* Botão Principal - 100% largura no mobile */}
+            {/* Botão Principal - Glass-Premium com brilho no hover */}
             <motion.a
               href="#produtos"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="group relative w-full sm:w-auto px-8 sm:px-12 md:px-16 py-4 sm:py-5 md:py-6 rounded-2xl overflow-hidden flex items-center justify-center gap-3 sm:gap-4"
+              className="group relative w-[95%] sm:w-auto px-8 sm:px-12 md:px-16 py-4 sm:py-5 md:py-6 rounded-2xl overflow-hidden flex items-center justify-center gap-3 sm:gap-4"
               style={{
                 background: 'rgba(255, 255, 255, 0.1)',
-                backdropFilter: 'blur(20px) saturate(180%)',
-                WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
                 border: '1px solid rgba(255, 255, 255, 0.2)',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
               }}
             >
+              {/* Brilho suave de dentro para fora no hover */}
               <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-400/30 to-transparent"
-                animate={{
-                  x: ['-100%', '200%'],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  repeatDelay: 1,
-                  ease: "easeInOut",
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{
+                  background: 'radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 50%, transparent 100%)',
                 }}
               />
               
@@ -548,21 +583,29 @@ const Hero: React.FC = () => {
               </motion.div>
             </motion.a>
 
-            {/* Botão Secundário - 100% largura no mobile */}
+            {/* Botão Secundário - Glass-Premium com brilho no hover */}
             <motion.a
               href="#origem"
-              whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.15)" }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="w-full sm:w-auto px-8 sm:px-12 md:px-16 py-4 sm:py-5 md:py-6 rounded-2xl flex items-center justify-center gap-2 transition-all"
+              className="group relative w-[95%] sm:w-auto px-8 sm:px-12 md:px-16 py-4 sm:py-5 md:py-6 rounded-2xl overflow-hidden flex items-center justify-center gap-2 transition-all"
               style={{
-                background: 'rgba(255, 255, 255, 0.08)',
-                backdropFilter: 'blur(15px) saturate(180%)',
-                WebkitBackdropFilter: 'blur(15px) saturate(180%)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
+                background: 'rgba(255, 255, 255, 0.1)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
                 boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)',
               }}
             >
-              <span className="font-montserrat font-semibold text-white text-sm sm:text-base md:text-lg lg:text-xl">
+              {/* Brilho suave de dentro para fora no hover */}
+              <motion.div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{
+                  background: 'radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 50%, transparent 100%)',
+                }}
+              />
+              
+              <span className="font-montserrat font-semibold text-white text-sm sm:text-base md:text-lg lg:text-xl relative z-10">
                 NOSSA ORIGEM
               </span>
             </motion.a>

@@ -34,7 +34,7 @@ function App() {
       {isLoading && <Preloader onComplete={handlePreloaderComplete} />}
       <Header />
             <main className="relative overflow-x-hidden">
-              <Hero />
+              <Hero isPreloaderComplete={!isLoading} />
               <Products />
               <Origin />
               <Fleet />
