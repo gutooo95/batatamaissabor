@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
-import { ShoppingCart, ArrowRight } from 'lucide-react';
+import { ShoppingCart, ArrowRight, FileText, Handshake } from 'lucide-react';
 
 interface FloatingElement {
   id: number;
@@ -38,6 +38,13 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
   // Detecta se é mobile
   const [isMobile, setIsMobile] = useState(false);
   
+  // Estado para o carrossel de imagens
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const heroImages = [
+    '/images/hero/Batata mais sabor-1769036321019.png',
+    '/images/hero/Batata mais sabor-1769036762231.png'
+  ];
+  
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -46,6 +53,15 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+  
+  // Carrossel automático - muda a cada 5 segundos
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
   
   // Mouse tracking para efeito magnético suave (damping: 20)
   const mouseX = useMotionValue(0);
@@ -80,21 +96,6 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
     const elements: FloatingElement[] = [];
     
     if (mobile) {
-      // MOBILE: Pacote Churrasco no canto inferior
-      elements.push({
-        id: 10,
-        type: 'package',
-        x: 75, // Canto direito
-        y: 65, // Inferior
-        size: 180,
-        rotation: -12,
-        imageIndex: 0,
-        blur: 0,
-        opacity: 1,
-        initialDelay: 0.3,
-        layer: 'midground',
-      });
-      
       // 2-3 batatas chips menores no topo com blur intenso (preencher espaço superior)
       const topPotatoes = [
         { x: 20, y: 15, size: 35, rotation: -25, blur: 8 }, // Topo-esquerda com blur intenso
@@ -166,21 +167,6 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
         initialDelay: i * 0.1,
         layer: 'foreground',
       });
-    });
-
-    // MIDGROUND: Pacote Churrasco
-    elements.push({
-      id: 10,
-      type: 'package',
-      x: 58,
-      y: 35,
-      size: 240,
-      rotation: -12,
-      imageIndex: 0,
-      blur: 0,
-      opacity: 1,
-      initialDelay: 0.3,
-      layer: 'midground',
     });
 
     // BACKGROUND: Batatas menores
@@ -369,6 +355,7 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
           style={{
             x: xTransform,
             y: yTransform,
+            backgroundColor: 'transparent',
           }}
           animate={{
             y: element.layer === 'background' 
@@ -391,10 +378,6 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
             },
           }}
           className="w-full h-full"
-          style={{
-            backgroundColor: 'transparent',
-            background: 'transparent',
-          }}
         >
           {element.type === 'sparkle' ? (
             <div className="w-full h-full rounded-full bg-yellow-300/60 blur-[1px]" />
@@ -405,7 +388,7 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
                   ? `/images/potatoes/${potatoImages[element.imageIndex]}`
                   : `/images/embalagens/batata-ondulada-churrasco.png`
               }
-              alt={element.type === 'potato' ? 'Batata' : 'Embalagem Churrasco'}
+              alt={element.type === 'potato' ? 'Batata crocante premium Batatas Mais Sabor - Snacks saudáveis e receitas gourmet' : 'Embalagem de Batata Ondulada Sabor Churrasco Batatas Mais Sabor 40g'}
               className="w-full h-full object-contain"
               style={{
                 mixBlendMode: 'normal',
@@ -434,8 +417,39 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
       onMouseLeave={handleMouseLeave}
       className="relative min-h-screen h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Fundo: Vermelho profundo com vinheta cinematográfica */}
-      <div className="absolute inset-0 bg-[#8B0000]">
+      {/* Fundo: Carrossel de fotos da Hero cobrindo toda a extensão */}
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Carrossel de imagens */}
+        {heroImages.map((image, index) => (
+          <motion.div
+            key={index}
+            className="absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{
+              opacity: currentImageIndex === index ? 1 : 0,
+              scale: currentImageIndex === index ? 1 : 1.1,
+            }}
+            transition={{
+              duration: 1.5,
+              ease: "easeInOut"
+            }}
+          >
+            <img 
+              src={image} 
+              alt={`Carrossel de imagens Batatas Mais Sabor - Produtos premium de batata palha e ondulada premium do Paraná ${index + 1}`}
+              className="w-full h-full object-cover"
+              loading={index === 0 ? "eager" : "lazy"}
+              fetchPriority={index === 0 ? "high" : "low"}
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+          </motion.div>
+        ))}
+        
+        {/* Overlay escuro para legibilidade do texto */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60" />
+        
         {/* Iluminação de Estúdio: Gradiente radial do topo (simula refletor) */}
         {isMobile && (
           <motion.div 
@@ -447,20 +461,23 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
         )}
         
         {/* Vignette: Ilumina o centro e escurece as quinas */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.1)_0%,_rgba(0,0,0,0.8)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.1)_0%,_rgba(0,0,0,0.7)_100%)]" />
         
-        {/* Background image com overlay */}
-        <img 
-          src="/images/hero/hero-background.png" 
-          alt=""
-          className="w-full h-full object-cover opacity-15"
-          loading="eager"
-          fetchPriority="high"
-          onError={(e) => {
-            e.currentTarget.style.display = 'none';
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/50" />
+        {/* Indicadores do carrossel (opcional - pequenos pontos na parte inferior) */}
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-[3] flex gap-2">
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentImageIndex(index)}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                currentImageIndex === index 
+                  ? 'bg-yellow-400 w-8' 
+                  : 'bg-white/40 hover:bg-white/60'
+              }`}
+              aria-label={`Ir para imagem ${index + 1}`}
+            />
+          ))}
+        </div>
       </div>
 
       {/* MOBILE: Topo da Tela - Partículas de Sal e Temperos em Slow Motion */}
@@ -529,7 +546,7 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
             >
               <img
                 src={`/images/potatoes/${potatoImages[potato.imageIndex]}`}
-                alt="Batata"
+                alt="Batata crocante premium Batatas Mais Sabor - Snacks saudáveis e receitas gourmet"
                 className="w-full h-full object-contain"
                 style={{
                   mixBlendMode: 'normal',
@@ -574,7 +591,7 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
             {particle.isPotato ? (
               <img
                 src={`/images/potatoes/${potatoImages[particle.id % 2]}`}
-                alt="Batata"
+                alt="Batata crocante premium Batatas Mais Sabor - Snacks saudáveis e receitas gourmet"
                 className="w-full h-full object-contain opacity-40"
                 style={{
                   mixBlendMode: 'normal',
@@ -598,77 +615,6 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
           .map((element, index) => renderFloatingElement(element, index))}
       </div>
 
-      {/* Layer 3: Midground - Pacote Churrasco (ATRÁS do título centralizado no mobile, com parallax) */}
-      <motion.div 
-        className="absolute inset-0 z-[3] md:z-[15] pointer-events-none"
-        style={{ y: isMobile ? layer2Y : undefined }} // Parallax no mobile
-      >
-        {floatingElements
-          .filter(el => el.layer === 'midground')
-          .map((element, index) => {
-            // No mobile: centralizado atrás do título, escala reduzida, z-index baixo
-            const mobileY = isMobile ? 50 : element.y; // Centralizado verticalmente
-            const mobileX = isMobile ? 50 : element.x; // Centralizado horizontalmente
-            const mobileScale = isMobile ? 0.5 : 1; // Reduzido para 50% no mobile
-            return (
-              <motion.div
-                key={element.id}
-                className="absolute pointer-events-none"
-                style={{
-                  left: `${mobileX}%`,
-                  top: `${mobileY}%`,
-                  width: `${isMobile ? element.size * mobileScale : element.size}px`,
-                  height: `${isMobile ? element.size * mobileScale : element.size}px`,
-                  filter: element.blur > 0 ? `blur(${element.blur}px)` : 'none',
-                  opacity: isMobile ? element.opacity * 0.5 : element.opacity, // Mais transparente no mobile
-                  zIndex: isMobile ? 18 : 15, // Atrás do texto (z-[21]) mas visível
-                  backgroundColor: 'transparent',
-                  background: 'transparent',
-                  transform: 'translate(-50%, -50%)', // Centraliza perfeitamente
-                }}
-                initial={{ scale: 0, opacity: 0 }}
-                animate={isPreloaderComplete ? { scale: 1, opacity: isMobile ? element.opacity * 0.5 : element.opacity } : { scale: 0, opacity: 0 }}
-                transition={{ duration: 0.8, delay: isPreloaderComplete ? element.initialDelay : 0, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <motion.div
-                  style={{
-                    x: packageXTransform,
-                    y: packageYTransform,
-                    backgroundColor: 'transparent',
-                    background: 'transparent',
-                  }}
-                  animate={{
-                    y: [-5, 5, -5], // Movimento mais sutil no mobile
-                    rotate: [element.rotation, element.rotation + 3, element.rotation],
-                  }}
-                  transition={{
-                    y: { duration: 4 + Math.random() * 2, repeat: Infinity, ease: "easeInOut" },
-                    rotate: { duration: 6 + Math.random() * 2, repeat: Infinity, ease: "easeInOut" },
-                  }}
-                  className="w-full h-full"
-                >
-                  <img
-                    src="/images/embalagens/batata-ondulada-churrasco.png"
-                    alt="Embalagem Churrasco"
-                    className="w-full h-full object-contain"
-                    style={{
-                      mixBlendMode: 'normal',
-                      filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.5))',
-                      imageRendering: 'crisp-edges',
-                      backgroundColor: 'transparent',
-                      background: 'transparent',
-                    }}
-                    loading="lazy"
-                    decoding="async"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                    }}
-                  />
-                </motion.div>
-              </motion.div>
-            );
-          })}
-      </motion.div>
 
       {/* Layer 4: Título e Conteúdo Principal - Centralização Atmosférica (Apple Style) */}
       <motion.div 
@@ -706,7 +652,7 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
               filter: 'drop-shadow(0 2px 4px rgba(255, 215, 0, 0.3))',
             }}
           >
-            A verdadeira explosão de sabor!
+            Espalhando mais sabor pelo Brasil
           </motion.span>
           
           {/* Título Principal - Londrina Solid Black, text-shadow ultra-sutil para legibilidade absoluta */}
@@ -742,7 +688,8 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
           >
             {/* Botão Principal - Glass-Premium com brilho no hover */}
             <motion.a
-              href="#produtos"
+              href="/catalogo/Catálogo Batata Mais Sabor (ATUALIZADO).pdf"
+              download="Catálogo Batata Mais Sabor (ATUALIZADO).pdf"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="group relative w-[95%] sm:w-auto px-8 sm:px-12 md:px-16 py-4 sm:py-5 md:py-6 rounded-2xl overflow-hidden flex items-center justify-center gap-3 sm:gap-4"
@@ -762,9 +709,9 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
                 }}
               />
               
-              <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 text-white relative z-10" />
+              <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-white relative z-10" />
               <span className="font-montserrat font-bold text-white text-sm sm:text-base md:text-lg lg:text-xl relative z-10">
-                PROVAR AGORA
+                NOSSO CATÁLOGO
               </span>
               <motion.div
                 animate={{ x: [0, 5, 0] }}
@@ -777,7 +724,7 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
 
             {/* Botão Secundário - Glass-Premium com brilho no hover */}
             <motion.a
-              href="#origem"
+              href="#distribuidor"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="group relative w-[95%] sm:w-auto px-8 sm:px-12 md:px-16 py-4 sm:py-5 md:py-6 rounded-2xl overflow-hidden flex items-center justify-center gap-2 transition-all"
@@ -797,8 +744,9 @@ const Hero: React.FC<HeroProps> = ({ isPreloaderComplete = true }) => {
                 }}
               />
               
+              <Handshake className="w-5 h-5 sm:w-6 sm:h-6 text-white relative z-10" />
               <span className="font-montserrat font-semibold text-white text-sm sm:text-base md:text-lg lg:text-xl relative z-10">
-                NOSSA ORIGEM
+                SEJA NOSSO CONSULTOR
               </span>
             </motion.a>
           </motion.div>

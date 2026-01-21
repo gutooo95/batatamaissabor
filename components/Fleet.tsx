@@ -52,7 +52,7 @@ const Fleet: React.FC = () => {
             </p>
 
             {/* Ícones Minimalistas */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-4 md:gap-6 pt-6 sm:pt-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 pt-6 sm:pt-8">
               {features.map((feature, index) => {
                 const IconComponent = feature.icon;
                 return (
@@ -94,7 +94,7 @@ const Fleet: React.FC = () => {
               {/* Imagem do caminhão */}
               <img
                 src="/images/frota/Batata mais Sabor-1768657692257.png"
-                alt="Frota em movimento"
+                alt="Frota própria de caminhões Batatas Mais Sabor para entrega rápida e logística exclusiva em todo Brasil"
                 className="absolute inset-0 w-full h-full object-cover z-10"
                 style={{
                   filter: 'brightness(0.9) contrast(1.1) saturate(1.2)',

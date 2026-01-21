@@ -51,7 +51,7 @@ const Recipes: React.FC = () => {
                   whileHover={{ y: -8 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handleCardClick(recipe)}
-                  className="group relative h-72 sm:h-80 md:h-96 rounded-[2.5rem] overflow-hidden cursor-pointer transition-all duration-500 w-[90%] sm:w-full mx-auto"
+                  className="group relative h-72 sm:h-80 md:h-96 rounded-2xl sm:rounded-[2.5rem] overflow-hidden cursor-pointer transition-all duration-500 w-full mx-auto"
                 >
                   {/* Imagem da Receita - 100% Nítida, Protagonista com Máscara Gradiente Refinada */}
                   <motion.div 
@@ -63,7 +63,7 @@ const Recipes: React.FC = () => {
                   >
                     <motion.img
                       src={`/images/receitas/${recipe.imageName}`}
-                      alt={recipe.title}
+                      alt={`Receita ${recipe.title} com Batata Palha Mais Sabor - Receitas gourmet e dicas do chef`}
                       className="w-full h-full object-cover object-center"
                       style={{
                         filter: 'saturate(1.5) brightness(1.1)',

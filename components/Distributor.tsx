@@ -88,7 +88,7 @@ const Distributor: React.FC = () => {
                 onSubmit={handleSubmit}
                 className="space-y-6 sm:space-y-8"
               >
-                <div className="grid sm:grid-cols-2 gap-6 sm:gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   {/* Nome */}
                   <div className="sm:col-span-2">
                     <label htmlFor="name" className="block font-montserrat text-sm font-semibold text-gray-300 mb-3">
@@ -101,7 +101,7 @@ const Distributor: React.FC = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full px-6 py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl text-white placeholder-gray-500 font-montserrat focus:outline-none focus:border-yellow-400/50 focus:bg-white/10 transition-all duration-300"
+                      className="w-full px-4 sm:px-6 py-3 sm:py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl sm:rounded-2xl text-white placeholder-gray-500 font-montserrat text-sm sm:text-base focus:outline-none focus:border-yellow-400/50 focus:bg-white/10 transition-all duration-300"
                       placeholder="Seu nome completo"
                     />
                   </div>
@@ -112,7 +112,7 @@ const Distributor: React.FC = () => {
                       Cidade
                     </label>
                     <div className="relative">
-                      <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 text-yellow-400/50 w-5 h-5" />
+                      <MapPin className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-yellow-400/50 w-4 h-4 sm:w-5 sm:h-5" />
                       <input
                         type="text"
                         id="city"
@@ -120,7 +120,7 @@ const Distributor: React.FC = () => {
                         value={formData.city}
                         onChange={handleChange}
                         required
-                        className="w-full pl-12 pr-6 py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl text-white placeholder-gray-500 font-montserrat focus:outline-none focus:border-yellow-400/50 focus:bg-white/10 transition-all duration-300"
+                        className="w-full pl-10 sm:pl-12 pr-4 sm:pr-6 py-3 sm:py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl sm:rounded-2xl text-white placeholder-gray-500 font-montserrat text-sm sm:text-base focus:outline-none focus:border-yellow-400/50 focus:bg-white/10 transition-all duration-300"
                         placeholder="Sua cidade"
                       />
                     </div>
@@ -138,7 +138,7 @@ const Distributor: React.FC = () => {
                       value={formData.state}
                       onChange={handleChange}
                       required
-                      className="w-full px-6 py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl text-white placeholder-gray-500 font-montserrat focus:outline-none focus:border-yellow-400/50 focus:bg-white/10 transition-all duration-300"
+                      className="w-full px-4 sm:px-6 py-3 sm:py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl sm:rounded-2xl text-white placeholder-gray-500 font-montserrat text-sm sm:text-base focus:outline-none focus:border-yellow-400/50 focus:bg-white/10 transition-all duration-300"
                       placeholder="Seu estado (ex: PR)"
                       maxLength={2}
                     />
@@ -150,7 +150,7 @@ const Distributor: React.FC = () => {
                       WhatsApp
                     </label>
                     <div className="relative">
-                      <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 text-yellow-400/50 w-5 h-5" />
+                      <Phone className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-yellow-400/50 w-4 h-4 sm:w-5 sm:h-5" />
                       <input
                         type="tel"
                         id="whatsapp"
@@ -158,7 +158,7 @@ const Distributor: React.FC = () => {
                         value={formData.whatsapp}
                         onChange={handleChange}
                         required
-                        className="w-full pl-12 pr-6 py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl text-white placeholder-gray-500 font-montserrat focus:outline-none focus:border-yellow-400/50 focus:bg-white/10 transition-all duration-300"
+                        className="w-full pl-10 sm:pl-12 pr-4 sm:pr-6 py-3 sm:py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl sm:rounded-2xl text-white placeholder-gray-500 font-montserrat text-sm sm:text-base focus:outline-none focus:border-yellow-400/50 focus:bg-white/10 transition-all duration-300"
                         placeholder="(44) 98823-1595"
                         pattern="[0-9\s\(\)\-]+"
                       />
@@ -172,7 +172,7 @@ const Distributor: React.FC = () => {
                   disabled={isSubmitting}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full sm:w-auto mx-auto sm:mx-0 px-12 py-5 bg-gradient-to-r from-yellow-400 to-yellow-500 text-neutral-950 font-montserrat font-bold text-lg rounded-2xl shadow-[0_8px_24px_rgba(255,215,0,0.3)] hover:shadow-[0_12px_32px_rgba(255,215,0,0.4)] transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full sm:w-auto mx-auto sm:mx-0 px-6 sm:px-12 py-4 sm:py-5 bg-gradient-to-r from-yellow-400 to-yellow-500 text-neutral-950 font-montserrat font-bold text-base sm:text-lg rounded-xl sm:rounded-2xl shadow-[0_8px_24px_rgba(255,215,0,0.3)] hover:shadow-[0_12px_32px_rgba(255,215,0,0.4)] transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
                     <>

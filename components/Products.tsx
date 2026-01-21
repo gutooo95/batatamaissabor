@@ -53,9 +53,9 @@ const Products: React.FC = () => {
           </div>
 
           {/* Grid 3 colunas - Altura uniforme */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10 justify-items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-10 justify-items-center">
             {onduladasProducts.map((product) => (
-              <div key={product.id} className="w-full h-[600px] sm:h-[650px] md:h-[680px]">
+              <div key={product.id} className="w-full max-w-sm sm:max-w-none h-[550px] sm:h-[600px] md:h-[650px] lg:h-[680px]">
                 <ProductCard product={product} onDetailsClick={handleDetailsClick} />
               </div>
             ))}
@@ -72,7 +72,7 @@ const Products: React.FC = () => {
           </div>
 
           {/* Grid 4 colunas - Altura uniforme - 1 coluna no mobile, 2 no tablet */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 md:gap-10 justify-items-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10 justify-items-center">
             {palhaProducts.map((product) => (
               <div key={product.id} className="w-full max-w-sm sm:max-w-none h-[550px] sm:h-[600px] md:h-[650px] lg:h-[680px]">
                 <ProductCard product={product} onDetailsClick={handleDetailsClick} />
